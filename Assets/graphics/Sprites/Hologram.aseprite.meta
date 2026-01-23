@@ -125,7 +125,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Hologram
     originalName: 
-    pivot: {x: 0.5, y: -0.36363637}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -134,7 +134,7 @@ ScriptedImporter:
       x: 4
       y: 4
       width: 16
-      height: 11
+      height: 16
     spriteID: 6439826a1ce76c247bdb00165acc4e86
     spriteBone: []
     spriteOutline: []
@@ -163,9 +163,9 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 0
-        y: 4
+        y: 0
         width: 16
-        height: 11
+        height: 16
       spriteId: 6439826a1ce76c247bdb00165acc4e86
     linkedCells: []
     parentIndex: -1
