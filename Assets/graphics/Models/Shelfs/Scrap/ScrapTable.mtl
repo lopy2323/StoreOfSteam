@@ -1,0 +1,14 @@
+# Made in Blockbench 5.0.7
+newmtl m_c22edc52-0f81-de5a-ed02-e44b3d465caf
+map_Kd TablePlankTexture.png
+newmtl m_b1e256a7-76d0-767e-f5cb-855d567d33a8
+map_Kd IBeamTexture.png
+newmtl m_605bdec5-0be7-4ab4-96be-5439741a02f0
+map_Kd PipeSupportTexture.png
+newmtl m_03556f5a-31bc-58e7-0aa6-322b657c6e4d
+map_Kd RoadSignTexture.png
+newmtl m_57e6b340-c104-17a9-5e18-a08e125688b8
+map_Kd MetalSheetTexture.png
+newmtl m_ce0d8118-c00b-1ae3-4eec-8876fab066ad
+map_Kd CrateTexture.png
+newmtl none
