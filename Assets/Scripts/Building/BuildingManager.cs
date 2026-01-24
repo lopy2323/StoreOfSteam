@@ -18,6 +18,8 @@ public class BuildingManager : MonoBehaviour
     private GameObject _currentHoloBuilding;
     private MeshRenderer _currentHoloMeshRenderer;
 
+    private int _currentRotation = 0;
+
     private List<Vector3Int> _oldlist = new List<Vector3Int>();
 
     private enum BuildState
@@ -28,7 +30,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    private string _currentBuilding = "Test";
+    private string _currentBuilding = "Scrap";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -46,16 +48,17 @@ public class BuildingManager : MonoBehaviour
             Debug.Log("Added " + buildObject.Name + " to BuildingDict");
         }
     }
-
-
-
-
-
-
-
-    // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _currentRotation += 1;
+            if (_currentRotation >= 4)
+            {
+                _currentRotation = 0;
+
+            }
+        }
         if (currentBuildState == BuildState.Building)
         {
             if (instantiated == false)
