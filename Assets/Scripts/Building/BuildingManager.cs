@@ -19,6 +19,7 @@ public class BuildingManager : MonoBehaviour
     private MeshRenderer _currentHoloMeshRenderer;
 
     private int _currentRotation = 0;
+    private Quaternion _currentQuaternion = Quaternion.Euler(0, 0, 0);
 
     private List<Vector3Int> _oldlist = new List<Vector3Int>();
 
@@ -53,17 +54,25 @@ public class BuildingManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             _currentRotation += 1;
+            _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
+            Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
+            if (_currentHoloBuilding != null)
+            {
+                _currentHoloBuilding.transform.rotation = _currentQuaternion;
+                Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
+            }
             if (_currentRotation >= 4)
             {
+                Debug.Log("Reset Rotation");
                 _currentRotation = 0;
-
+                _currentQuaternion = Quaternion.Euler(0,0, 0);
             }
         }
         if (currentBuildState == BuildState.Building)
         {
             if (instantiated == false)
             {
-                _currentHoloBuilding = Instantiate(BuildingDict[_currentBuilding].HoloPrefab, Vector3.zero, Quaternion.identity);
+                _currentHoloBuilding = Instantiate(BuildingDict[_currentBuilding].HoloPrefab, Vector3.zero, _currentQuaternion);
                 _currentHoloMeshRenderer = _currentHoloBuilding.GetComponentInChildren<MeshRenderer>();
                 instantiated = true;
 
@@ -87,7 +96,7 @@ public class BuildingManager : MonoBehaviour
                         }
                         data.occupied = true;
                     }
-                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab,_currentHoloBuilding.transform.position, Quaternion.identity);
+                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab,_currentHoloBuilding.transform.position, _currentQuaternion);
                     instantiated = false;
                     Destroy(_currentHoloBuilding);
                     _currentHoloBuilding = null;
@@ -145,25 +154,52 @@ public class BuildingManager : MonoBehaviour
     private (List<Vector3Int>,Vector3Int) CalculateBuilding(string buildingname,Vector3 Worldposbuild)
     {
         List<Vector3Int> occupiedpositions = new List<Vector3Int>();
+        Vector3 cal = new Vector3(0,0,0);
+        float _tempWidth = BuildingDict[buildingname].width;
+        float _tempLength = BuildingDict[buildingname].length;
+        if (_currentRotation == 1 || _currentRotation == 3)
+        {
+            _tempWidth = BuildingDict[buildingname].length;
+            _tempLength = BuildingDict[buildingname].width;
+        }
+        if (_currentRotation == 0 || _currentRotation == 3)
+        {
+            cal = new Vector3(Worldposbuild.x + ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z - ((_tempWidth - 1.00f) / 2.00f));
+        }
+        if (_currentRotation == 1 || _currentRotation == 2)
+        {
+            cal = new Vector3(Worldposbuild.x - ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z + ((_tempWidth - 1.00f) / 2.00f));
 
-        Debug.Log("Calculating building positions for " + (BuildingDict[buildingname].length - 1.00f) / 2.00f);
-
-        Vector3 cal = new Vector3(Worldposbuild.x + ((BuildingDict[buildingname].length - 1.00f) / 2.00f),0,Worldposbuild.z - ((BuildingDict[buildingname].width - 1.00f) / 2.00f));
+        }
 
         Vector3Int origin = GridManager.instance.tilemap.WorldToCell(cal);
 
         Vector3Int currentlengthnode = origin;
         
-        for (int i = 0; i < BuildingDict[buildingname].length; i++ )
+        for (int i = 0; i < _tempLength; i++ )
         {
             occupiedpositions.Add(currentlengthnode);
             Vector3Int currentwidthnode = currentlengthnode;
-            for (int j = 0; j < BuildingDict[buildingname].width - 1; j++)
+            for (int j = 0; j < _tempWidth - 1; j++)
             {
-                currentwidthnode.y += 1;
+                if (_currentRotation == 1 || _currentRotation == 2)
+                {
+                    currentwidthnode.y -= 1;
+                }
+                else
+                {
+                    currentwidthnode.y += 1;
+                }
                 occupiedpositions.Add(currentwidthnode);
             }
-            currentlengthnode.x += 1;
+            if (_currentRotation == 2 || _currentRotation == 3)
+            {
+                currentlengthnode.x -= 1;
+            }
+            else
+            {
+                currentlengthnode.x += 1;
+            }
         }
         return (occupiedpositions,origin);
     }
