@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e970f239d1ce12b4bbb38a4db6bf76a3, type: 3}
+  m_Name: BuildObject
+  m_EditorClassIdentifier: 
+  Name: Scrap
+  FinalPrefab: {fileID: 6926491651141927137, guid: abf331f78eade2546abc69ac07e9d0f6, type: 3}
+  HoloPrefab: {fileID: 5874394488218969330, guid: 772680ffc063be446b82b6e5a53dfc3e, type: 3}
+  width: 2
+  length: 1
+  height: 1

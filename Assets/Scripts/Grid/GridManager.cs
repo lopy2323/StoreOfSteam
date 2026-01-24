@@ -9,6 +9,7 @@ public class GridManager : MonoBehaviour
     static public GridManager instance;
     public Tilemap tilemap;
     public Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
+    public GameObject buildObject;
 
     void Awake()
     {
@@ -26,7 +27,7 @@ public class GridManager : MonoBehaviour
 
             TileData data = new TileData(
                 true,
-                tilemap.CellToWorld(pos) + tilemap.cellSize / 2f,
+                tilemap.GetCellCenterWorld(pos),
                 pos.x,
                 pos.y,
                 pos,
@@ -38,8 +39,21 @@ public class GridManager : MonoBehaviour
 
     public TileData GetTileData(Vector3Int pos)
     {
-        tileDataMap.TryGetValue(pos, out var data);
+        tileDataMap.TryGetValue(pos, out TileData data);
         return data;
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) { 
+            foreach (var kvp in tileDataMap)
+            {
+                if (kvp.Value.occupied == true)
+                {
+                   Vector3 buildpos = new Vector3(kvp.Value.worldPosition.x, 1, kvp.Value.worldPosition.z);
+                    Instantiate(buildObject, buildpos, Quaternion.identity);
+                }
+            }
+        }
     }
 }
 
