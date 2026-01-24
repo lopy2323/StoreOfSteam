@@ -38,7 +38,7 @@ public class GridManager : MonoBehaviour
 
     public TileData GetTileData(Vector3Int pos)
     {
-        tileDataMap.TryGetValue(pos, out var data);
+        tileDataMap.TryGetValue(pos, out TileData data);
         return data;
     }
 }
