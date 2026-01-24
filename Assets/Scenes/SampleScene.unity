@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 2048616581}
+  buildObject: {fileID: 3874763647880602669, guid: f99ec9a57d0709342a285a7e7d07556c, type: 3}
 --- !u!4 &211265712
 Transform:
   m_ObjectHideFlags: 0
