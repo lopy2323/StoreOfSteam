@@ -3,11 +3,16 @@ using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
-    [SerializeField] private float _cameraSensitivity = 10f;
-    [SerializeField] private float _maxCameraAngle = 80f;
-    [SerializeField] private Camera _camera;
+    [SerializeField] private float _sensX;
+    [SerializeField] private float _sensY;
 
-    private float _pitch = 0f; // Track the up/down rotation
+    [SerializeField] private Transform _orientation;
+
+    private float _xRotation;
+    private float _yRotation;
+
+    private float mouseX;
+    private float mouseY;
 
     void Start()
     {
@@ -15,17 +20,21 @@ public class CameraMovement : MonoBehaviour
         Cursor.visible = false;
     }
 
-    public void OnMouse(InputAction.CallbackContext context)
+    private void Update()
     {
-        Vector2 inputVector = context.ReadValue<Vector2>();
+        _yRotation += mouseX;
 
+        _xRotation -= mouseY;
+        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
 
-        transform.Rotate(Vector3.up, _cameraSensitivity * inputVector.x);
+        transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
+        _orientation.transform.rotation = Quaternion.Euler(0, _yRotation, 0);
+    }
 
-
-        _pitch -= _cameraSensitivity * inputVector.y;
-        _pitch = Mathf.Clamp(_pitch, -_maxCameraAngle, _maxCameraAngle);
-
-        _camera.transform.localEulerAngles = new Vector3(_pitch, 0f, 0f);
+    public void OnMouseMove(InputAction.CallbackContext context)
+    {
+        Vector2 mouseDelta = context.ReadValue<Vector2>();
+        mouseX = mouseDelta.x * _sensX;
+        mouseY = mouseDelta.y * _sensY;
     }
 }
