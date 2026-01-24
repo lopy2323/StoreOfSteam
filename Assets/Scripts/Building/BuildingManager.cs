@@ -162,14 +162,21 @@ public class BuildingManager : MonoBehaviour
             _tempWidth = BuildingDict[buildingname].length;
             _tempLength = BuildingDict[buildingname].width;
         }
-        if (_currentRotation == 0 || _currentRotation == 3)
+        if (_currentRotation == 0)
         {
             cal = new Vector3(Worldposbuild.x + ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z - ((_tempWidth - 1.00f) / 2.00f));
         }
-        if (_currentRotation == 1 || _currentRotation == 2)
+        if (_currentRotation == 1)
+        {
+            cal = new Vector3(Worldposbuild.x - ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z - ((_tempWidth - 1.00f) / 2.00f));
+        }
+        if (_currentRotation == 2)
         {
             cal = new Vector3(Worldposbuild.x - ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z + ((_tempWidth - 1.00f) / 2.00f));
-
+        }
+        if (_currentRotation == 3)
+        {
+            cal = new Vector3(Worldposbuild.x + ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z + ((_tempWidth - 1.00f) / 2.00f));
         }
 
         Vector3Int origin = GridManager.instance.tilemap.WorldToCell(cal);
@@ -182,7 +189,7 @@ public class BuildingManager : MonoBehaviour
             Vector3Int currentwidthnode = currentlengthnode;
             for (int j = 0; j < _tempWidth - 1; j++)
             {
-                if (_currentRotation == 1 || _currentRotation == 2)
+                if (_currentRotation == 3 || _currentRotation == 2)
                 {
                     currentwidthnode.y -= 1;
                 }
@@ -192,13 +199,13 @@ public class BuildingManager : MonoBehaviour
                 }
                 occupiedpositions.Add(currentwidthnode);
             }
-            if (_currentRotation == 2 || _currentRotation == 3)
+            if (_currentRotation == 2 || _currentRotation == 1)
             {
-                currentlengthnode.x -= 1;
+                currentlengthnode.x += 1;
             }
             else
             {
-                currentlengthnode.x += 1;
+                currentlengthnode.x -= 1;
             }
         }
         return (occupiedpositions,origin);
