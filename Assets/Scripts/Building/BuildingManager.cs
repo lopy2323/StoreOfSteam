@@ -13,6 +13,16 @@ public class BuildingManager : MonoBehaviour
 
     public Dictionary<string, Building> BuildingDict = new Dictionary<string, Building>();
 
+    private Vector3Int _oldOrigin;
+
+    private enum BuildState
+    {
+        Idle,
+        Building
+    }
+
+    private BuildState currentBuildState = BuildState.Building;
+
     private string _currentBuilding = "Scrap";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -51,11 +61,26 @@ public class BuildingManager : MonoBehaviour
                 List<Vector3Int> occupiedPositions;
                 Vector3Int res;
                 (occupiedPositions, res) = CalculateBuilding(_currentBuilding, hitPosition);
-                Instantiate(BuildingDict[_currentBuilding].FinalPrefab,GridManager.instance.tilemap.GetCellCenterWorld(res),Quaternion.identity);
 
+                foreach (Vector3Int item in occupiedPositions)
+                {
+                    TileData data = GridManager.instance.GetTileData(item);
+                    if (data == null) Debug.Log("fuck");
+                    if (data.occupied == true)
+                    {
+                        Debug.Log("Cannot build here, tile occupied at " + item); return;
+                    }
+                }
+                Instantiate(BuildingDict[_currentBuilding].FinalPrefab, GridManager.instance.tilemap.GetCellCenterWorld(res), Quaternion.identity);
+                foreach (Vector3Int item in occupiedPositions)
+                {
+                    var data = GridManager.instance.GetTileData(item);
+                    data.occupied = true;
+                }
             }
         }
     }
+
 
     // width is z length is x
     private (List<Vector3Int>,Vector3Int) CalculateBuilding(string buildingname,Vector3 Worldposbuild)
