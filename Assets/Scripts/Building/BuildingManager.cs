@@ -52,6 +52,7 @@ public class BuildingManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -64,6 +65,7 @@ public class BuildingManager : MonoBehaviour
 
                 foreach (Vector3Int item in occupiedPositions)
                 {
+                    Debug.Log("Checking tile at " + item);
                     TileData data = GridManager.instance.GetTileData(item);
                     if (data == null) Debug.Log("fuck");
                     if (data.occupied == true)
@@ -99,9 +101,9 @@ public class BuildingManager : MonoBehaviour
         {
             occupiedpositions.Add(currentlengthnode);
             Vector3Int currentwidthnode = currentlengthnode;
-            for (int j = 0; j < BuildingDict[buildingname].width; j++)
+            for (int j = 0; j < BuildingDict[buildingname].width - 1; j++)
             {
-                currentwidthnode.z += 1;
+                currentwidthnode.y += 1;
                 occupiedpositions.Add(currentwidthnode);
             }
             currentlengthnode.x += 1;
