@@ -14,6 +14,11 @@ public class BuildingManager : MonoBehaviour
     public Dictionary<string, Building> BuildingDict = new Dictionary<string, Building>();
 
     private Vector3Int _oldOrigin;
+    private bool instantiated = false;
+    private GameObject _currentHoloBuilding;
+    private MeshRenderer _currentHoloMeshRenderer;
+
+    private List<Vector3Int> _oldlist = new List<Vector3Int>();
 
     private enum BuildState
     {
@@ -23,7 +28,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    private string _currentBuilding = "Scrap";
+    private string _currentBuilding = "Test";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -47,41 +52,90 @@ public class BuildingManager : MonoBehaviour
 
 
 
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (currentBuildState == BuildState.Building)
         {
+            if (instantiated == false)
+            {
+                _currentHoloBuilding = Instantiate(BuildingDict[_currentBuilding].HoloPrefab, Vector3.zero, Quaternion.identity);
+                _currentHoloMeshRenderer = _currentHoloBuilding.GetComponentInChildren<MeshRenderer>();
+                instantiated = true;
 
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                if (_currentHoloMeshRenderer.material.color == Color.red)
+                {
+                    Debug.Log("Cannot build here!");
+                }
+                if (_currentHoloMeshRenderer.material.color == Color.green)
+                {
+
+
+                    foreach (Vector3Int item in _oldlist)
+                    {
+                        TileData data = GridManager.instance.GetTileData(item);
+                        if (data.occupied == true)
+                        {
+                            return;
+                        }
+                        data.occupied = true;
+                    }
+                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab,_currentHoloBuilding.transform.position, Quaternion.identity);
+                    instantiated = false;
+                    Destroy(_currentHoloBuilding);
+                    _currentHoloBuilding = null;
+                    _currentHoloMeshRenderer = null;
+                    
+                }
+            }
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
+                bool canBuildHere = false;
                 Vector3 hitPosition = hit.point;
-                //Instantiate(lol, hitPosition, Quaternion.identity);
                 List<Vector3Int> occupiedPositions;
                 Vector3Int res;
                 (occupiedPositions, res) = CalculateBuilding(_currentBuilding, hitPosition);
-
-                foreach (Vector3Int item in occupiedPositions)
+                if (res != _oldOrigin)
                 {
-                    Debug.Log("Checking tile at " + item);
-                    TileData data = GridManager.instance.GetTileData(item);
-                    if (data == null) Debug.Log("fuck");
-                    if (data.occupied == true)
+                    _oldlist.Clear();
+                    _oldOrigin = res;
+                    foreach (Vector3Int item in occupiedPositions)
                     {
-                        Debug.Log("Cannot build here, tile occupied at " + item); return;
+                        TileData data = GridManager.instance.GetTileData(item);
+                        if (data.occupied == true)
+                        {
+                            canBuildHere = false;
+                            break;
+                        }
+                        canBuildHere = true;
+                    }
+                    if (canBuildHere == true)
+                    {
+                        _currentHoloBuilding.transform.position = GridManager.instance.tilemap.GetCellCenterWorld(res);
+                        _currentHoloMeshRenderer.material.color = Color.green;
+                        foreach (var item in occupiedPositions)
+                        {
+                            _oldlist.Add(item);
+                        }
+                    }
+                    if (canBuildHere == false)
+                    {
+                        _currentHoloBuilding.transform.position = GridManager.instance.tilemap.GetCellCenterWorld(res);
+                        _currentHoloMeshRenderer.material.color = Color.red;
                     }
                 }
-                Instantiate(BuildingDict[_currentBuilding].FinalPrefab, GridManager.instance.tilemap.GetCellCenterWorld(res), Quaternion.identity);
-                foreach (Vector3Int item in occupiedPositions)
-                {
-                    var data = GridManager.instance.GetTileData(item);
-                    data.occupied = true;
-                }
+
             }
+
         }
     }
+
 
 
     // width is z length is x

@@ -547,7 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lol: {fileID: 8814750151166838795, guid: 8bc29caea528b0c4180ac859b79a04e9, type: 3}
   buildObjects:
-  - {fileID: 11400000, guid: 74a68c8504176cb4fb1db15b992c6371, type: 2}
+  - {fileID: 11400000, guid: 0b3ef6689247e4c42888ed80cbfa8127, type: 2}
 --- !u!4 &1903989270
 Transform:
   m_ObjectHideFlags: 0
