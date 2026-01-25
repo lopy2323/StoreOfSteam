@@ -58,19 +58,10 @@ public class BuildingManager : MonoBehaviour
         {
             rotating = true;
             _currentRotation += 1;
-            _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
-            Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
-            if (_currentHoloBuilding != null)
-            {
-                _currentHoloBuilding.transform.rotation = _currentQuaternion;
-                Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
-
-            }
             if (_currentRotation >= 4)
             {
                 Debug.Log("Reset Rotation");
                 _currentRotation = 0;
-                _currentQuaternion = Quaternion.Euler(0,0, 0);
 
             }
         }
@@ -123,6 +114,22 @@ public class BuildingManager : MonoBehaviour
                 {
                     _oldlist.Clear();
                     _oldRotation = _currentRotation;
+                    _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
+                    Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
+                    if (_currentHoloBuilding != null)
+                    {
+                        _currentHoloBuilding.transform.rotation = _currentQuaternion;
+                        Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
+
+                    }
+                    if (_currentRotation >= 4)
+                    {
+                        Debug.Log("Reset Rotation");
+                        _currentQuaternion = Quaternion.Euler(0, 0, 0);
+
+                    }
+
+
                     _oldOrigin = res;
                     foreach (Vector3Int item in occupiedPositions)
                     {
