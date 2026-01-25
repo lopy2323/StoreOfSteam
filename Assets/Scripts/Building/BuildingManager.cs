@@ -19,9 +19,12 @@ public class BuildingManager : MonoBehaviour
     private MeshRenderer _currentHoloMeshRenderer;
 
     private int _currentRotation = 0;
+    private int _oldRotation = 0;
     private Quaternion _currentQuaternion = Quaternion.Euler(0, 0, 0);
 
     private List<Vector3Int> _oldlist = new List<Vector3Int>();
+
+    private bool rotating = false;
 
     private enum BuildState
     {
@@ -53,6 +56,7 @@ public class BuildingManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            rotating = true;
             _currentRotation += 1;
             _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
             Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
@@ -60,12 +64,14 @@ public class BuildingManager : MonoBehaviour
             {
                 _currentHoloBuilding.transform.rotation = _currentQuaternion;
                 Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
+
             }
             if (_currentRotation >= 4)
             {
                 Debug.Log("Reset Rotation");
                 _currentRotation = 0;
                 _currentQuaternion = Quaternion.Euler(0,0, 0);
+
             }
         }
         if (currentBuildState == BuildState.Building)
@@ -113,9 +119,10 @@ public class BuildingManager : MonoBehaviour
                 List<Vector3Int> occupiedPositions;
                 Vector3Int res;
                 (occupiedPositions, res) = CalculateBuilding(_currentBuilding, hitPosition);
-                if (res != _oldOrigin)
+                if (res != _oldOrigin || _currentRotation != _oldRotation)
                 {
                     _oldlist.Clear();
+                    _oldRotation = _currentRotation;
                     _oldOrigin = res;
                     foreach (Vector3Int item in occupiedPositions)
                     {
