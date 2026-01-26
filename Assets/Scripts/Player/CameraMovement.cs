@@ -29,6 +29,20 @@ public class CameraMovement : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
         _orientation.transform.rotation = Quaternion.Euler(0, _yRotation, 0);
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
     }
 
     public void OnMouseMove(InputAction.CallbackContext context)

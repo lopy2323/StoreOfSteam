@@ -17,6 +17,7 @@ public class BuildingManager : MonoBehaviour
     private bool instantiated = false;
     private GameObject _currentHoloBuilding;
     private MeshRenderer _currentHoloMeshRenderer;
+    private Transform _buildingTransform;
 
     private int _currentRotation = 0;
     private int _oldRotation = 0;
