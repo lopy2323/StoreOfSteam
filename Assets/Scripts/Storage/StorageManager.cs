@@ -2,25 +2,39 @@ using UnityEngine;
 
 public class StorageManager : MonoBehaviour
 {
-    bool isStorageOpen = false;
-    [SerializeField]private LayerMask Storagelayer;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool isStorageOpen = true;
 
+    [SerializeField] private LayerMask Storagelayer;
+    [SerializeField] private float repeatInterval = 0.2f;
 
-    // Update is called once per frame
-    private void FixedUpdate()
+    [SerializeField]public Item item;
+
+    private float _nextFireTime;
+
+    void Update()
     {
         if (isStorageOpen == true)
         {
-            while (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0) && Time.time >= _nextFireTime)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                Physics.Raycast(ray, out RaycastHit hit,2,Storagelayer);
-                GameObject obj = hit.collider.gameObject;
-                if (obj != null)
-                {
-                    Collider col = obj.GetComponent<Collider>();
-                }
+                _nextFireTime = Time.time + repeatInterval;
+                HandleStorageClick();
+            }
+        }
+    }
+
+    private void HandleStorageClick()
+    {
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 2f, Storagelayer))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+
+            if (hitObject.TryGetComponent<ShelfSpawn>(out var shelfSpawn))
+            {
+                shelfSpawn.SpawnItem(item);
             }
         }
     }
