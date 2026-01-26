@@ -103,7 +103,7 @@ public class BuildingManager : MonoBehaviour
             }
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.Raycast(ray, out RaycastHit hit,6))
             {
                 bool canBuildHere = false;
                 Vector3 hitPosition = hit.point;
