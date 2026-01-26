@@ -34,7 +34,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    private string _currentBuilding = "Scrap";
+    private string _currentBuilding = "Test1";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
