@@ -18,15 +18,14 @@ public class TestAi : MonoBehaviour
         // Find the PeopleManagerScript in the scene
         showPathLines = FindFirstObjectByType<DebugManager>().pathLines;
     }
-
-    private void Start()
-    {
-        MovePerson(1, targetPosition.transform.position, "testTarget");
-    }
-
     void Update()
     {
         UpdatePathLine();
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            MovePerson(1, targetPosition.transform.position, "testTarget");
+        }
     }
 
     //-- requestPath

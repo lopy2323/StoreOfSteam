@@ -72,7 +72,7 @@ public class Pathfinding : MonoBehaviour
         TileData startNode = gridManager.GetTileData(tilemap.WorldToCell(startWorldPos));
         TileData endNode = gridManager.GetTileData(tilemap.WorldToCell(targetWorldPos));
 
-        if (endNode.walkable)
+        if (!endNode.occupied)
         {
             List<TileData> OpenSet = new List<TileData>();
             HashSet<TileData> ClosedSet = new HashSet<TileData>();
@@ -107,7 +107,7 @@ public class Pathfinding : MonoBehaviour
                         continue;
                     }
 
-                    if (!neighbor.walkable || ClosedSet.Contains(neighbor))
+                    if (neighbor.occupied || ClosedSet.Contains(neighbor))
                     {
                         continue;
                     }
