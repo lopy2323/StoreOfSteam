@@ -178,15 +178,23 @@ public class Pathfinding : MonoBehaviour
         {
             for (int y = -1; y <= 1; y++)
             {
-                if (x == 0 && y == 0)
-                    continue;
-                if (x == 1 && y == 1 || x == -1 && y == -1 || x == 1 && y == -1 || x == -1 && y == 1)
-                {
-                    continue;
-                }
+                if (x == 0 && y == 0) continue;
                 Vector3Int neighborPos = new Vector3Int(pos.x + x, pos.y + y, pos.z);
                 TileData neighborNode = gridManager.GetTileData(neighborPos);
-                if (neighborNode != null)
+                if (neighborNode == null) continue;
+
+                if (Mathf.Abs(x) == 1 && Mathf.Abs(y) == 1)
+                {
+
+                    TileData node1 = gridManager.GetTileData(new Vector3Int(pos.x + x, pos.y, pos.z));
+                    TileData node2 = gridManager.GetTileData(new Vector3Int(pos.x, pos.y + y, pos.z));
+
+                    if (node1 != null && node2 != null && !node1.occupied && !node2.occupied)
+                    {
+                        neighbours.Add(neighborNode);
+                    }
+                }
+                else
                 {
                     neighbours.Add(neighborNode);
                 }
