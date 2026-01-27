@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Shelf : MonoBehaviour
 {
-    private List<Collider> _placment = new List<Collider>();
+    private List<ShelfSpawn> _placment = new List<ShelfSpawn>();
 
     public List<Vector3Int> occupiedSpaces = new List<Vector3Int>();
 
@@ -13,7 +13,7 @@ public class Shelf : MonoBehaviour
     {
         foreach (Transform child in _itemStoragePoint.transform)
         {
-            Collider col = child.GetComponent<Collider>();
+            ShelfSpawn col = child.GetComponent<ShelfSpawn>();
             if (col != null)
             {
                 _placment.Add(col);
