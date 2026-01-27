@@ -27,6 +27,7 @@ public class ShelfSpawn : MonoBehaviour
     }
     public void SpawnItem()
     {
+<<<<<<< HEAD
         if (_item == null)
         {
             return;
@@ -40,6 +41,26 @@ public class ShelfSpawn : MonoBehaviour
 
                 Vector3 spawnPos = new Vector3(startX, 0, startZ) + transform.position;
                 Instantiate(_item.itemPrefab, spawnPos, quaternion.identity);
+=======
+        _item = _items;
+
+        int maxAmount = Mathf.FloorToInt(_shelfWidth / (_item.width + 0.05f));
+
+        if (_item != null)
+        {
+            if (lastItem == new Vector3(0,0,0))
+            {
+                var firstItemPosition = shelfCollider.bounds.min.x;
+                lastItem = new Vector3(firstItemPosition,2,0);
+                Instantiate(_item.itemPrefab, lastItem, quaternion.identity, transform);
+                amountOfItems++;
+            }
+            if (amountOfItems < maxAmount)
+            {
+                lastItem += new Vector3(_item.width + 0.05f, 0, 0);
+                Instantiate(_item.itemPrefab, lastItem, quaternion.identity, transform);
+                amountOfItems++;
+>>>>>>> 4b7a0605ff0edac2501906c8165968425a293f70
             }
         }
 
