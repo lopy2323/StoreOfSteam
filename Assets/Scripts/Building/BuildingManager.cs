@@ -35,7 +35,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    [SerializeField]private string _currentBuilding;
+    [SerializeField] private string _currentBuilding;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -94,17 +94,17 @@ public class BuildingManager : MonoBehaviour
                         }
                         data.occupied = true;
                     }
-                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab,_currentHoloBuilding.transform.position, _currentQuaternion);
+                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab, _currentHoloBuilding.transform.position, _currentQuaternion);
                     instantiated = false;
                     Destroy(_currentHoloBuilding);
                     _currentHoloBuilding = null;
                     _currentHoloMeshRenderer = null;
-                    
+
                 }
             }
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit,6))
+            if (Physics.Raycast(ray, out RaycastHit hit, 6))
             {
                 bool canBuildHere = false;
                 Vector3 hitPosition = hit.point;
@@ -166,10 +166,10 @@ public class BuildingManager : MonoBehaviour
 
 
     // width is z length is x
-    private (List<Vector3Int>,Vector3Int) CalculateBuilding(string buildingname,Vector3 Worldposbuild)
+    private (List<Vector3Int>, Vector3Int) CalculateBuilding(string buildingname, Vector3 Worldposbuild)
     {
         List<Vector3Int> occupiedpositions = new List<Vector3Int>();
-        Vector3 cal = new Vector3(0,0,0);
+        Vector3 cal = new Vector3(0, 0, 0);
         float _tempWidth = BuildingDict[buildingname].width;
         float _tempLength = BuildingDict[buildingname].length;
         if (_currentRotation == 1 || _currentRotation == 3)
@@ -197,8 +197,8 @@ public class BuildingManager : MonoBehaviour
         Vector3Int origin = GridManager.instance.tilemap.WorldToCell(cal);
 
         Vector3Int currentlengthnode = origin;
-        
-        for (int i = 0; i < _tempLength; i++ )
+
+        for (int i = 0; i < _tempLength; i++)
         {
             occupiedpositions.Add(currentlengthnode);
             Vector3Int currentwidthnode = currentlengthnode;
@@ -223,6 +223,6 @@ public class BuildingManager : MonoBehaviour
                 currentlengthnode.x -= 1;
             }
         }
-        return (occupiedpositions,origin);
+        return (occupiedpositions, origin);
     }
 }
