@@ -1463,7 +1463,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28c1eda68344c0f4fbc216562f7a69d6, type: 2}
   - {fileID: 11400000, guid: 74a68c8504176cb4fb1db15b992c6371, type: 2}
   - {fileID: 11400000, guid: 0b3ef6689247e4c42888ed80cbfa8127, type: 2}
-  _currentBuilding: Scrap
+  _currentBuilding: Test1
 --- !u!4 &1674299802
 Transform:
   m_ObjectHideFlags: 0
