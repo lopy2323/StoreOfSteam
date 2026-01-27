@@ -24,15 +24,12 @@ public class ShelfSpawn : MonoBehaviour
     {
         _item = _items;
 
-        Debug.Log("Shelf Width: " + _shelfWidth);
-
         int maxAmount = Mathf.FloorToInt(_shelfWidth / (_item.width + 0.05f));
 
         if (_item != null)
         {
             if (lastItem == new Vector3(0,0,0))
             {
-                Debug.Log("Spawning first item");
                 var firstItemPosition = shelfCollider.bounds.min.x;
                 lastItem = new Vector3(firstItemPosition,2,0);
                 Instantiate(_item.itemPrefab, lastItem, quaternion.identity, transform);
