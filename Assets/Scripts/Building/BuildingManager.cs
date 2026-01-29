@@ -35,7 +35,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    [SerializeField] private string _currentBuilding;
+    public string _currentBuilding;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -224,5 +224,16 @@ public class BuildingManager : MonoBehaviour
             }
         }
         return (occupiedpositions, origin);
+    }
+
+    public void StopBuilding()
+    {
+        if (_currentHoloBuilding != null)
+        {
+            Destroy(_currentHoloBuilding);
+            instantiated = false;
+            _currentHoloBuilding = null;
+            _currentHoloMeshRenderer = null;
+        }
     }
 }

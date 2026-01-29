@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e970f239d1ce12b4bbb38a4db6bf76a3, type: 3}
+  m_Name: TestShelf
+  m_EditorClassIdentifier: 
+  Name: TestShelf
+  FinalPrefab: {fileID: 7180390084249372, guid: 287339eb6334b0548b62b476a5fe6171, type: 3}
+  HoloPrefab: {fileID: 7180390084249372, guid: fc102ae2f3c21bc448cbac4423856532, type: 3}
+  width: 1
+  length: 3
+  height: 3

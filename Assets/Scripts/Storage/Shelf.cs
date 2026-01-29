@@ -3,25 +3,28 @@ using UnityEngine;
 
 public class Shelf : MonoBehaviour
 {
-    private List<Collider> _placment = new List<Collider>();
+    public List<ShelfSpawn> StorageSpaces = new List<ShelfSpawn>();
 
-    public List<Vector3Int> occupiedSpaces = new List<Vector3Int>();
-
-    [SerializeField]private GameObject _itemStoragePoint;
+    [SerializeField] private List<Item> _storedItems = new List<Item>();
 
     private void Start()
     {
-        foreach (Transform child in _itemStoragePoint.transform)
+
+    }
+
+    public void UpdateShelfItems()
+    {
+        _storedItems.Clear();
+        foreach (ShelfSpawn shelfSpawn in StorageSpaces)
         {
-            Collider col = child.GetComponent<Collider>();
-            if (col != null)
+            if (shelfSpawn != null)
             {
-                _placment.Add(col);
+                Item item = shelfSpawn.ShelfItem;
+                if (item != null)
+                {
+                    _storedItems.Add(item);
+                }
             }
         }
     }
-
-
-
-
 }

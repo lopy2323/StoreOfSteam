@@ -1,50 +1,87 @@
-using Unity.Mathematics;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 public class ShelfSpawn : MonoBehaviour
 {
-    [SerializeField]Collider shelfCollider;
-    [SerializeField]private Item _item;
+    [SerializeField] private Collider shelfCollider;
+    [SerializeField] private Shelf shelfScript;
+    public Item ShelfItem = null;
 
     private float _shelfHeight;
     private float _shelfWidth;
     private float _shelfDepth;
 
-    private Vector3 lastItem;
-
     private int amountOfItems;
+    private List<GameObject> _spawnedItems = new List<GameObject>();
 
     private void Start()
     {
-        _shelfHeight = shelfCollider.bounds.size.y;
-        _shelfWidth = shelfCollider.bounds.size.x;
-        _shelfDepth = shelfCollider.bounds.size.z;
+        // Get the collider's bounds in local space
+        Vector3 localSize = transform.InverseTransformVector(shelfCollider.bounds.size);
+
+        _shelfWidth = Mathf.Abs(localSize.x);
+        _shelfHeight = Mathf.Abs(localSize.y);
+        _shelfDepth = Mathf.Abs(localSize.z);
     }
-    public void SpawnItem(Item _items)
+
+    public void SpawnItem(Item _item)
     {
-        _item = _items;
-
-        Debug.Log("Shelf Width: " + _shelfWidth);
-
-        int maxAmount = Mathf.FloorToInt(_shelfWidth / (_item.width + 0.05f));
-
-        if (_item != null)
+        if(ShelfItem != _item && ShelfItem != null)
         {
-            if (lastItem == new Vector3(0,0,0))
-            {
-                Debug.Log("Spawning first item");
-                var firstItemPosition = shelfCollider.bounds.min.x;
-                lastItem = new Vector3(firstItemPosition,2,0);
-                Instantiate(_item.itemPrefab, lastItem, quaternion.identity, transform);
-                amountOfItems++;
-            }
-            if (amountOfItems < maxAmount)
-            {
-                lastItem += new Vector3(_item.width + 0.05f, 0, 0);
-                Instantiate(_item.itemPrefab, lastItem, quaternion.identity, transform);
-                amountOfItems++;
-            }
+            return;
+        }
+        if (ShelfItem == null)
+        {
+            ShelfItem = _item;
+            shelfScript.UpdateShelfItems();
+        }
+
+        int maxAmountWidth = Mathf.FloorToInt(_shelfWidth / (_item.width + 0.05f));
+        int maxAmountDepth = Mathf.FloorToInt(_shelfDepth / (_item.depth + 0.05f));
+
+        if (amountOfItems < maxAmountWidth * maxAmountDepth)
+        {
+            int xIndex = amountOfItems % maxAmountWidth;
+            int zIndex = amountOfItems / maxAmountWidth;
+
+            // Calculate even spacing for the row
+            float totalItemWidth = maxAmountWidth * _item.width;
+            float totalGapWidth = _shelfWidth - totalItemWidth;
+            float gapBetween = maxAmountWidth > 1 ? totalGapWidth / (maxAmountWidth - 1) : 0f;
+
+            float xOffset = xIndex * (_item.width + gapBetween) + (_item.width / 2) - (_shelfWidth / 2);
+            float zOffset = zIndex * (_item.depth + 0.05f) + (_item.depth / 2) - (_shelfDepth / 2);
+            float yOffset = (_item.height / 2) + 0.01f - (_shelfHeight / 2);
+
+            Vector3 localOffset = (transform.right * xOffset) + (transform.forward * zOffset) + (transform.up * yOffset);
+            Vector3 spawnPosition = shelfCollider.bounds.center + localOffset;
+
+            _spawnedItems.Add(Instantiate(_item.itemPrefab, spawnPosition, transform.rotation));
+            amountOfItems++;
+        }
+        else
+        {
+            Debug.Log("No more space on the shelf!");
         }
     }
 
+    public void RemoveItem(Item item, Action<bool> callback)
+    {
+        if (item != ShelfItem) return;
+        if (amountOfItems > 0)
+        {
+            amountOfItems--;
+            callback?.Invoke(true);
+            GameObject itemToRemove = _spawnedItems[_spawnedItems.Count - 1];
+            _spawnedItems.RemoveAt(_spawnedItems.Count - 1);
+            Destroy(itemToRemove);
+        }
+        if (amountOfItems == 0)
+        {
+            this.ShelfItem = null;
+            shelfScript.UpdateShelfItems();
+            return;
+        }
+    }
 }
