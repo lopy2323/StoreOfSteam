@@ -53,6 +53,19 @@ public class ShelfSpawn : MonoBehaviour
             float xOffset = xIndex * (_item.width + gapBetween) + (_item.width / 2) - (_shelfWidth / 2);
             float zOffset = zIndex * (_item.depth + 0.05f) + (_item.depth / 2) - (_shelfDepth / 2);
             float yOffset = (_item.height / 2) + 0.01f - (_shelfHeight / 2);
+        if (_item == null)
+        {
+            return;
+        }
+        if (_itemindexz <= _amountofitemsz)
+        {
+            if (lastItem == new Vector3(0,0,0))
+            {
+                float startX = _shelfWidth * 0.5f + _item.width * 0.5f;
+                float startZ = _shelfDepth * 0.5f + _item.depth * 0.5f;
+
+                Vector3 spawnPos = new Vector3(startX, 0, startZ) + transform.position;
+                Instantiate(_item.itemPrefab, spawnPos, quaternion.identity);
 
             Vector3 localOffset = (transform.right * xOffset) + (transform.forward * zOffset) + (transform.up * yOffset);
             Vector3 spawnPosition = shelfCollider.bounds.center + localOffset;
@@ -63,8 +76,20 @@ public class ShelfSpawn : MonoBehaviour
         else
         {
             Debug.Log("No more space on the shelf!");
+            }
         }
+
+
+
     }
+    public void addItem(Item it)
+    {
+        _item = it;
+    }
+    private void calculateAmountOfItems()
+    {
+        _amountofitemsx = Mathf.FloorToInt(_shelfWidth / _item.width + 0.05f);
+        _amountofitemsz = Mathf.FloorToInt(_shelfDepth / _item.depth + 0.03f);
 
     public void RemoveItem(Item item, Action<bool> callback)
     {
