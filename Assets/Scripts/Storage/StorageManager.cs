@@ -45,10 +45,8 @@ public class StorageManager : MonoBehaviour
             if (hitObject.TryGetComponent<ShelfSpawn>(out var shelfSpawn))
             {
                 if (activePackageScript.packageAmount == 0) return;
-                activePackageScript.packageAmount--;
-                activePackageScript.Updatetext();
 
-                shelfSpawn.SpawnItem(item);
+                shelfSpawn.SpawnItem(item, activePackageScript);
             }
         }
     }
@@ -72,8 +70,7 @@ public class StorageManager : MonoBehaviour
 
     private void OnRemoveItem(bool _gotItemBack)
     {
-        Debug.Log("Item removed: " + item);
-        activePackageScript.packageAmount++;
-        activePackageScript.Updatetext();
+            activePackageScript.packageAmount++;
+            activePackageScript.Updatetext();
     }
 }
