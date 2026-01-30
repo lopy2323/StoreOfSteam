@@ -2,9 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-using System.IO;
-using UnityEditor;
-
 public class PathRequestManager : MonoBehaviour
 {
     Queue<PathRequest> pathRequestQueue = new Queue<PathRequest>();

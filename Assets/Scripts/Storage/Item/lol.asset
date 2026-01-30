@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: lol
   m_EditorClassIdentifier: 
   itemName: lol
-  width: 0.45
-  height: 0.6
-  depth: 0.15
+  width: 0.35
+  height: 0.5
+  depth: 0.11
+  marketPrice: 12
   itemPrefab: {fileID: 8604914896063659974, guid: ec79f1c4c1e456544bdec96ef7973065, type: 3}

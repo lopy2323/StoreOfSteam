@@ -25,9 +25,11 @@ public class ShelfSpawn : MonoBehaviour
         _shelfDepth = Mathf.Abs(localSize.z);
     }
 
-    public void SpawnItem(Item _item)
+    public void SpawnItem(Item _item, PackageScript activePackageScript)
     {
-        if(ShelfItem != _item && ShelfItem != null)
+        float edgeMargin = 0.05f; // Adjust this value as needed
+
+        if (ShelfItem != _item && ShelfItem != null)
         {
             return;
         }
@@ -37,8 +39,12 @@ public class ShelfSpawn : MonoBehaviour
             shelfScript.UpdateShelfItems();
         }
 
-        int maxAmountWidth = Mathf.FloorToInt(_shelfWidth / (_item.width + 0.05f));
-        int maxAmountDepth = Mathf.FloorToInt(_shelfDepth / (_item.depth + 0.05f));
+        // Calculate available width and depth after accounting for edge margins
+        float availableWidth = _shelfWidth - 2 * edgeMargin;
+        float availableDepth = _shelfDepth - 2 * edgeMargin;
+
+        int maxAmountWidth = Mathf.FloorToInt(availableWidth / (_item.width + 0.05f));
+        int maxAmountDepth = Mathf.FloorToInt(availableDepth / (_item.depth + 0.05f));
 
         if (amountOfItems < maxAmountWidth * maxAmountDepth)
         {
@@ -47,17 +53,19 @@ public class ShelfSpawn : MonoBehaviour
 
             // Calculate even spacing for the row
             float totalItemWidth = maxAmountWidth * _item.width;
-            float totalGapWidth = _shelfWidth - totalItemWidth;
+            float totalGapWidth = availableWidth - totalItemWidth;
             float gapBetween = maxAmountWidth > 1 ? totalGapWidth / (maxAmountWidth - 1) : 0f;
 
-            float xOffset = xIndex * (_item.width + gapBetween) + (_item.width / 2) - (_shelfWidth / 2);
-            float zOffset = zIndex * (_item.depth + 0.05f) + (_item.depth / 2) - (_shelfDepth / 2);
+            float xOffset = edgeMargin + xIndex * (_item.width + gapBetween) + (_item.width / 2) - (_shelfWidth / 2);
+            float zOffset = edgeMargin + zIndex * (_item.depth + 0.05f) + (_item.depth / 2) - (_shelfDepth / 2);
             float yOffset = (_item.height / 2) + 0.01f - (_shelfHeight / 2);
 
             Vector3 localOffset = (transform.right * xOffset) + (transform.forward * zOffset) + (transform.up * yOffset);
             Vector3 spawnPosition = shelfCollider.bounds.center + localOffset;
 
             _spawnedItems.Add(Instantiate(_item.itemPrefab, spawnPosition, transform.rotation));
+            activePackageScript.packageAmount--;
+            activePackageScript.Updatetext();
             amountOfItems++;
         }
         else
@@ -83,5 +91,26 @@ public class ShelfSpawn : MonoBehaviour
             shelfScript.UpdateShelfItems();
             return;
         }
+    }
+    public int RemoveItemNPC(Item item, int removeAmount)
+    {
+        if (item != ShelfItem || amountOfItems == 0)
+            return 0;
+
+        int toRemove = Mathf.Min(removeAmount, amountOfItems);
+
+        for (int i = 0; i < toRemove; i++)
+        {
+            amountOfItems--;
+            GameObject itemToRemove = _spawnedItems[_spawnedItems.Count - 1];
+            _spawnedItems.RemoveAt(_spawnedItems.Count - 1);
+            Destroy(itemToRemove);
+        }
+        if (amountOfItems == 0)
+        {
+            this.ShelfItem = null;
+        }
+
+        return toRemove;
     }
 }
