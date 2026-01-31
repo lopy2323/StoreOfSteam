@@ -17,11 +17,15 @@ public class BuildingManager : MonoBehaviour
     private bool instantiated = false;
     private GameObject _currentHoloBuilding;
     private MeshRenderer _currentHoloMeshRenderer;
+    private Transform _buildingTransform;
 
     private int _currentRotation = 0;
+    private int _oldRotation = 0;
     private Quaternion _currentQuaternion = Quaternion.Euler(0, 0, 0);
 
     private List<Vector3Int> _oldlist = new List<Vector3Int>();
+
+    private bool rotating = false;
 
     private enum BuildState
     {
@@ -31,7 +35,7 @@ public class BuildingManager : MonoBehaviour
 
     private BuildState currentBuildState = BuildState.Building;
 
-    private string _currentBuilding = "Scrap";
+    public string _currentBuilding;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,19 +57,13 @@ public class BuildingManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            rotating = true;
             _currentRotation += 1;
-            _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
-            Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
-            if (_currentHoloBuilding != null)
-            {
-                _currentHoloBuilding.transform.rotation = _currentQuaternion;
-                Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
-            }
             if (_currentRotation >= 4)
             {
                 Debug.Log("Reset Rotation");
                 _currentRotation = 0;
-                _currentQuaternion = Quaternion.Euler(0,0, 0);
+
             }
         }
         if (currentBuildState == BuildState.Building)
@@ -96,26 +94,43 @@ public class BuildingManager : MonoBehaviour
                         }
                         data.occupied = true;
                     }
-                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab,_currentHoloBuilding.transform.position, _currentQuaternion);
+                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab, _currentHoloBuilding.transform.position, _currentQuaternion);
                     instantiated = false;
                     Destroy(_currentHoloBuilding);
                     _currentHoloBuilding = null;
                     _currentHoloMeshRenderer = null;
-                    
+
                 }
             }
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.Raycast(ray, out RaycastHit hit, 6))
             {
                 bool canBuildHere = false;
                 Vector3 hitPosition = hit.point;
                 List<Vector3Int> occupiedPositions;
                 Vector3Int res;
                 (occupiedPositions, res) = CalculateBuilding(_currentBuilding, hitPosition);
-                if (res != _oldOrigin)
+                if (res != _oldOrigin || _currentRotation != _oldRotation)
                 {
                     _oldlist.Clear();
+                    _oldRotation = _currentRotation;
+                    _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
+                    Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
+                    if (_currentHoloBuilding != null)
+                    {
+                        _currentHoloBuilding.transform.rotation = _currentQuaternion;
+                        Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
+
+                    }
+                    if (_currentRotation >= 4)
+                    {
+                        Debug.Log("Reset Rotation");
+                        _currentQuaternion = Quaternion.Euler(0, 0, 0);
+
+                    }
+
+
                     _oldOrigin = res;
                     foreach (Vector3Int item in occupiedPositions)
                     {
@@ -151,10 +166,10 @@ public class BuildingManager : MonoBehaviour
 
 
     // width is z length is x
-    private (List<Vector3Int>,Vector3Int) CalculateBuilding(string buildingname,Vector3 Worldposbuild)
+    private (List<Vector3Int>, Vector3Int) CalculateBuilding(string buildingname, Vector3 Worldposbuild)
     {
         List<Vector3Int> occupiedpositions = new List<Vector3Int>();
-        Vector3 cal = new Vector3(0,0,0);
+        Vector3 cal = new Vector3(0, 0, 0);
         float _tempWidth = BuildingDict[buildingname].width;
         float _tempLength = BuildingDict[buildingname].length;
         if (_currentRotation == 1 || _currentRotation == 3)
@@ -182,8 +197,8 @@ public class BuildingManager : MonoBehaviour
         Vector3Int origin = GridManager.instance.tilemap.WorldToCell(cal);
 
         Vector3Int currentlengthnode = origin;
-        
-        for (int i = 0; i < _tempLength; i++ )
+
+        for (int i = 0; i < _tempLength; i++)
         {
             occupiedpositions.Add(currentlengthnode);
             Vector3Int currentwidthnode = currentlengthnode;
@@ -208,6 +223,17 @@ public class BuildingManager : MonoBehaviour
                 currentlengthnode.x -= 1;
             }
         }
-        return (occupiedpositions,origin);
+        return (occupiedpositions, origin);
+    }
+
+    public void StopBuilding()
+    {
+        if (_currentHoloBuilding != null)
+        {
+            Destroy(_currentHoloBuilding);
+            instantiated = false;
+            _currentHoloBuilding = null;
+            _currentHoloMeshRenderer = null;
+        }
     }
 }
