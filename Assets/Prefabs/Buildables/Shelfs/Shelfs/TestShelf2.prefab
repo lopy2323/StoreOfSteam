@@ -210,7 +210,7 @@ MonoBehaviour:
   - {fileID: 737427923160415151}
   _storedItems: []
   _targetStandingPoint:
-  - {fileID: 0}
+  - {fileID: 6039468296117572853}
   _storageManager: {fileID: 0}
 --- !u!1 &8796742140920808011
 GameObject:
