@@ -1,7 +1,8 @@
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 
 public class GridManager : MonoBehaviour
@@ -15,6 +16,19 @@ public class GridManager : MonoBehaviour
     {
         instance = this;
         ScanTilemap();
+
+
+        if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 
     void ScanTilemap()

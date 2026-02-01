@@ -8,10 +8,28 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
+    static public ItemManager instance;
     private Dictionary<string, ItemData> itemDictionary;
     [SerializeField]private Item[] items;
 
-
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
     void Start()
     {
         itemDictionary = new Dictionary<string, ItemData>();
