@@ -63,7 +63,7 @@ public class StorageManager : MonoBehaviour
 
             if (hitObject.TryGetComponent<ShelfSpawn>(out var shelfSpawn))
             {
-                shelfSpawn.RemoveItem(item, OnRemoveItem);
+                shelfSpawn.RemoveItem(item, OnRemoveItem, activePackageScript.transform.position);
             }
         }
     }
