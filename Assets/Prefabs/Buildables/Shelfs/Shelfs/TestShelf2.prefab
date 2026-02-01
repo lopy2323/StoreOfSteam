@@ -133,6 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shelfCollider: {fileID: 3519368904149938539}
   shelfScript: {fileID: 152510093172956470}
+  _particle: {fileID: 2983898152351991695, guid: 708831098b68edd4195ede5086af67e3, type: 3}
   ShelfItem: {fileID: 0}
 --- !u!1 &7740477808168920209
 GameObject:
@@ -279,6 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shelfCollider: {fileID: 3407652209611194137}
   shelfScript: {fileID: 152510093172956470}
+  _particle: {fileID: 2983898152351991695, guid: 708831098b68edd4195ede5086af67e3, type: 3}
   ShelfItem: {fileID: 0}
 --- !u!1 &8881802549965395126
 GameObject:
@@ -348,6 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shelfCollider: {fileID: 102546507195353150}
   shelfScript: {fileID: 152510093172956470}
+  _particle: {fileID: 2983898152351991695, guid: 708831098b68edd4195ede5086af67e3, type: 3}
   ShelfItem: {fileID: 0}
 --- !u!1001 &2084495489072128449
 PrefabInstance:

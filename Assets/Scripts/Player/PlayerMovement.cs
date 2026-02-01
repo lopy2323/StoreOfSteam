@@ -6,7 +6,10 @@ using UnityEngine.Rendering;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 1000f;
+    [SerializeField] private float _walkSpeed = 7f;
+    [SerializeField] private float _sprintSpeed = 14f;
+
+    private float _moveSpeed = 0f;
 
     [SerializeField] private Transform _orientation;
 
@@ -23,11 +26,25 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
+
+        _moveSpeed = _walkSpeed;
     }
 
     void FixedUpdate()
     {
         Moveplayer();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _moveSpeed = _sprintSpeed;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _moveSpeed = _walkSpeed;
+        }
     }
 
     private void Moveplayer()
@@ -37,14 +54,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (_moveInput.x != 0f || _moveInput.z != 0)
         {
-            _cameraYOffset += Time.deltaTime * _walkBobSpeed;
-            _moveCamera.cameraOffsetY = Mathf.Sin(_cameraYOffset) * _walkBobAmount;
+            _cameraYOffset += Time.deltaTime * _walkBobSpeed * (((_moveSpeed / _walkSpeed - 1) / 2) + 1);
+            _moveCamera.cameraOffsetY = Mathf.Sin(_cameraYOffset) * _walkBobAmount * (((_moveSpeed / _walkSpeed - 1) / 5) + 1);
         }
         else
         {
             _cameraYOffset = 0f;
-            _moveCamera.cameraOffsetY = 0f;
-
+            _moveCamera.cameraOffsetY = Mathf.Lerp(_moveCamera.cameraOffsetY, 0f, Time.deltaTime * 8f);
         }
     }
     public void OnMove(InputAction.CallbackContext context)
