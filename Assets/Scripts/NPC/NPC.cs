@@ -1,14 +1,27 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 
 public class NPC : MonoBehaviour
 {
+    private class NpcData
+    {
+        public string name;
+        public int amounttoget;
+        public NpcData(string name, int amounttoget)
+        {
+            this.name = name;
+            this.amounttoget = amounttoget;
+        }
+    }
+
 
     private float scrore = 100f;
-    private List<string> shoppinglist = new List<string>();
+    private List<NpcData> shoppinglist = new List<NpcData>();
     private Shelf _shelf;
     public TypeOfCustomer typeOfCustomer = TypeOfCustomer.Workerclass;
 
@@ -19,6 +32,7 @@ public class NPC : MonoBehaviour
     Vector3[] path;
     int targetIndex;
     public int personID;
+    private bool selectedNpc = false;
     public enum TypeOfCustomer
     {
         Workerclass,
@@ -27,44 +41,59 @@ public class NPC : MonoBehaviour
     }
     private void Start()
     {
-        List<Shelf> shelves = ItemManager.instance.GetShelfs("lol");
-        if (shelves.Count == 0)
-        {
-            Debug.Log("No shelf found with item: " + "lol");
-            return;
-        }
-        if (shelves.Count > 0)
-        {
-            float distance = Vector3.Distance(transform.position, shelves[0].transform.position);
-            for (int i = 1; i < shelves.Count; i++)
-            {
-                float newdistance = Vector3.Distance(transform.position, shelves[i].transform.position);
-                if (newdistance < distance)
-                {
-                    distance = newdistance;
-                    _shelf = shelves[i];
-                }
-            }
-        }
-        movetoShelf();
-    }
-    private void movetoShelf()
-    {
-        Vector3 target = _shelf._targetStandingPoint[0].position;
-
-        PathRequestManager.RequestPath(transform.position, target,OnPathFound);
-    }
-    
-    private void getItem()
-        {
-        _shelf.TakeItem("lol",1);
-        shoppinglist.RemoveAt(0);
-        Debug.Log("Item taken from shelf, remaining items: " + shoppinglist.Count);
+        ItemSelectList(typeOfCustomer);
+        Npcfase1();
     }
     private void ItemSelectList(TypeOfCustomer type)
     {
-        shoppinglist.Add("lol");
+        shoppinglist.Add(new NpcData("lol",5));
+        shoppinglist.Add(new NpcData("lol", 5));
     }
+
+    //fase 1
+
+    private void Npcfase1()
+    {
+        if (shoppinglist.Count != 0)
+        {
+            List<Shelf> shelves = ItemManager.instance.GetShelfs(shoppinglist[0].name);
+            if (shelves.Count == 0)
+            {
+                Debug.Log("No shelf found with item: " + shoppinglist[0]);
+                return;
+            }
+            if (selectedNpc == false)
+            {
+                Shelf nearestshelf = null;
+                var nearestDistance = float.MaxValue;
+                foreach (Shelf shelfsItem in shelves)
+                {
+                    float distance = Vector3.Distance(transform.position, shelfsItem.transform.position);
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestshelf = shelfsItem;
+                    }
+                }
+                _shelf = nearestshelf;
+                selectedNpc = true;
+
+            }
+            if (selectedNpc == true)
+            {
+                Vector3 target = _shelf._targetStandingPoint[0].position;
+
+                PathRequestManager.RequestPath(transform.position, target, OnPathFound);
+            }
+        }
+        if (shoppinglist.Count == 0)
+        {
+            Debug.Log("Shopping list is empty for NPC");
+        }
+
+    }    
+    // fase2
+
     public void OnPathFound(Vector3[] newPath, bool pathSuccessful)
     {
         processingPath = false;
@@ -76,8 +105,6 @@ public class NPC : MonoBehaviour
             StartCoroutine("FollowPath");
         }
     }
-    //-- end request path
-
     IEnumerator FollowPath()
     {
         if (path == null || path.Length == 0)
@@ -91,7 +118,7 @@ public class NPC : MonoBehaviour
                 targetIndex++;
                 if (targetIndex >= path.Length && !processingPath)
                 {
-                    getItem();
+                    Npcfase3();
                     yield break; // Reached the end of the path
                 }
                 // Only update currentWaypoint if targetIndex is valid
@@ -101,5 +128,26 @@ public class NPC : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, speed * Time.deltaTime);
             yield return null;
         }
+    }
+
+    // fase 3
+
+    private void Npcfase3()
+    {
+        int left = _shelf.TakeItem(shoppinglist[0].name, shoppinglist[0].amounttoget);
+        if (left != 0)
+        {
+            shoppinglist.Add(new NpcData("lol", left));
+        }
+        Npcfase4();
+    }
+
+    //fase 4
+
+    private void Npcfase4()
+    {
+        shoppinglist.RemoveAt(0);
+        selectedNpc = false;
+        Npcfase1();
     }
 }

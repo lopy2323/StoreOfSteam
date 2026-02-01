@@ -45,7 +45,8 @@ public class Shelf : MonoBehaviour
                 {
                     int removed = shelfSpawn.RemoveItemNPC(item, removeAmount);
                     UpdateShelfItems();
-                    return removed;
+                    
+                    return removeAmount - removed;
                 }
             }
         }
