@@ -83,15 +83,21 @@ public class NPC : MonoBehaviour
             {
                 Vector3 target = _shelf._targetStandingPoint[0].position;
 
-                PathRequestManager.RequestPath(transform.position, target, OnPathFound);
+                if (target != transform.position)
+                {
+                    PathRequestManager.RequestPath(transform.position, target, OnPathFound);
+                } else if (target == transform.position && shoppinglist[0] != null)
+                {
+                    Npcfase3();
+                }
             }
         }
         if (shoppinglist.Count == 0)
         {
             Debug.Log("Shopping list is empty for NPC");
         }
+    }
 
-    }    
     // fase2
 
     public void OnPathFound(Vector3[] newPath, bool pathSuccessful)
@@ -108,7 +114,9 @@ public class NPC : MonoBehaviour
     IEnumerator FollowPath()
     {
         if (path == null || path.Length == 0)
+        {
             yield break;
+        }
 
         Vector3 currentWaypoint = path[targetIndex];
         while (true)
