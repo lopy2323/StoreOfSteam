@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Collections;
-using static UnityEditor.Progress;
 
 public class ShelfSpawn : MonoBehaviour
 {
@@ -15,7 +14,7 @@ public class ShelfSpawn : MonoBehaviour
     private float _shelfWidth;
     private float _shelfDepth;
 
-    private int amountOfItems;
+    public int amountOfItems;
     private List<GameObject> _spawnedItems = new List<GameObject>();
 
     private GameObject _particleObject;

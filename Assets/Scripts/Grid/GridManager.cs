@@ -76,11 +76,11 @@ public class GridManager : MonoBehaviour
                 });
             }
 
-            SaveSystem.instance.SaveData(list);
+            SaveSystem.instance.SaveSection("TestSave", "gridData",list);
         }
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            var list = SaveSystem.instance.LoadData<List<TileSaveData>>();
+            var list = SaveSystem.instance.LoadSection<List<TileSaveData>>("TestSave", "gridData");
             foreach (var item in list)
             {
                 if (tileDataMap.ContainsKey(item.position))
