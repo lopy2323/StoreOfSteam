@@ -12,10 +12,15 @@ public class GridManager : MonoBehaviour
     public Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
     public GameObject buildObject;
 
+    static bool savegame = false;
+
     void Awake()
     {
         instance = this;
-        ScanTilemap();
+        if (!savegame)
+        {
+            ScanTilemap();
+        }
 
 
         if (instance != this)
@@ -58,6 +63,33 @@ public class GridManager : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            var list = new List<TileSaveData>();
+
+            foreach (var kvp in tileDataMap)
+            {
+                list.Add(new TileSaveData
+                {
+                    position = kvp.Key,
+                    occupied = kvp.Value.occupied
+                });
+            }
+
+            SaveSystem.instance.SaveData(list);
+        }
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            var list = SaveSystem.instance.LoadData<List<TileSaveData>>();
+            foreach (var item in list)
+            {
+                if (tileDataMap.ContainsKey(item.position))
+                {
+                    tileDataMap[item.position].occupied = item.occupied;
+                }
+            }
+            savegame = true;
+        }
         if (Input.GetKeyDown(KeyCode.Space)) { 
             foreach (var kvp in tileDataMap)
             {
@@ -69,5 +101,12 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+}
+
+[System.Serializable]
+public struct TileSaveData
+{
+    public Vector3Int position;
+    public bool occupied;
 }
 
