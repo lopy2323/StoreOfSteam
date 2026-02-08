@@ -6,14 +6,14 @@ public class PackageScript : MonoBehaviour
 {
 
     [Header("References")]
-    [SerializeField] private StorageManager _storageManager;
-    [SerializeField] private BuildingManager _buildingManager;
-    [SerializeField] private Transform _PackageHolder;
+    public StorageManager _storageManager;
+    public BuildingManager _buildingManager;
+    public Transform _PackageHolder;
     [SerializeField] private TextMeshPro _packageText;
 
     [Header("Package Info: Assign either an Item or a Building, not both.")]
-    [SerializeField] private Item _item;
-    [SerializeField] private string _building = "Please insert building name here";
+    public Item _item;
+    public string _building = "Please insert building name here";
 
     [Header("Package Settings, if item is building this does not matter - only set packageAmount")]
     public int packageAmount = 1;
