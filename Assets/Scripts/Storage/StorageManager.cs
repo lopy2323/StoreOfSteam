@@ -1,10 +1,14 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StorageManager : MonoBehaviour
 {
     private bool isStorageOpen = true;
+
+    public bool managerEnabled = false;
 
     [SerializeField] private LayerMask Storagelayer;
     [SerializeField] private float repeatInterval = 0.2f;
@@ -17,20 +21,23 @@ public class StorageManager : MonoBehaviour
 
     void Update()
     {
-        if (isStorageOpen == true)
+        if (managerEnabled)
         {
-            if (Input.GetKey(KeyCode.Mouse0) && Time.time >= _nextFireTime)
+            if (isStorageOpen == true)
             {
-                _nextFireTime = Time.time + repeatInterval;
-                HandleStorageClick();
+                if (Input.GetKey(KeyCode.Mouse0) && Time.time >= _nextFireTime)
+                {
+                    _nextFireTime = Time.time + repeatInterval;
+                    HandleStorageClick();
+                }
             }
-        }
-        if (isStorageOpen == true)
-        {
-            if (Input.GetKey(KeyCode.Mouse1) && Time.time >= _nextFireTime)
+            if (isStorageOpen == true)
             {
-                _nextFireTime = Time.time + repeatInterval;
-                HandleStorageClickRight();
+                if (Input.GetKey(KeyCode.Mouse1) && Time.time >= _nextFireTime)
+                {
+                    _nextFireTime = Time.time + repeatInterval;
+                    HandleStorageClickRight();
+                }
             }
         }
 
@@ -80,28 +87,42 @@ public class StorageManager : MonoBehaviour
 
     private void SaveUpdate()
     {
-        Debug.Log("Press F4 to save shelf data, F5 to load shelf data.");
         if (Input.GetKeyDown(KeyCode.F4))
         {
             var list = new List<ShelfData>();
             GameObject[] shelfObjects = GameObject.FindGameObjectsWithTag("Shelf");
             foreach (GameObject shelf in shelfObjects)
             {
-                ShelfSpawn shelfSpawn = shelf.GetComponent<ShelfSpawn>();
+                List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
+                shelfspawns.AddRange(shelf.GetComponentsInChildren<ShelfSpawn>());
+                shelfspawns.Reverse();
                 ShelfData data = new ShelfData
                 {
-                    transform = shelf.transform,
-                    name = shelf.name,
+                    position = new float[] { shelf.transform.position.x, shelf.transform.position.y, shelf.transform.position.z },
+                    rotation = new float[] { shelf.transform.rotation.eulerAngles.x, shelf.transform.rotation.eulerAngles.y, shelf.transform.rotation.eulerAngles.z },
+                    name = shelf.GetComponent<Shelf>().ShelfName,
                     SubShelfs = new List<SubshelfData>()
                 };
-                if (shelfSpawn.ShelfItem != null)
+                foreach (var item in shelfspawns)
                 {
-                    SubshelfData subData = new SubshelfData
+                    if (item.ShelfItem != null)
                     {
-                        item = shelfSpawn.ShelfItem,
-                        amount = shelfSpawn.amountOfItems
-                    };
-                    data.SubShelfs.Add(subData);
+                        SubshelfData subData = new SubshelfData
+                        {
+                            itemName = item.ShelfItem.itemName,
+                            amount = item.amountOfItems
+                        };
+                        data.SubShelfs.Add(subData);
+                    }
+                    else
+                    {
+                        SubshelfData subData = new SubshelfData
+                        {
+                            itemName = null,
+                            amount = 0
+                        };
+                        data.SubShelfs.Add(subData);
+                    }
                 }
                 list.Add(data);
             }
@@ -109,23 +130,20 @@ public class StorageManager : MonoBehaviour
             Debug.Log("Saving " + list.Count + " shelves.");
             SaveSystem.instance.SaveSection("TestSave", "shelfData", list);
         }
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-
-        }
     }
 }
 
 [System.Serializable]
 public struct ShelfData
 {
-    public Transform transform;
+    public float[] position;
+    public float[] rotation;
     public string name;
     public List<SubshelfData> SubShelfs;
 }
 
 public struct SubshelfData
 {
-    public Item item;
+    public string itemName;
     public int amount;
 }

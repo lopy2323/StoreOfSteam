@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static BuildingManager;
 
 public class PackageScript : MonoBehaviour
 {
@@ -80,15 +81,15 @@ public class PackageScript : MonoBehaviour
         if (_isBuilding)
         {
             _buildingManager._currentBuilding = _building;
-            _buildingManager.enabled = true;
-            _storageManager.enabled = false;
+            _buildingManager.currentBuildState = BuildState.Building;
+            _storageManager.managerEnabled = false;
         }
         else
         {
             _storageManager.activePackageScript = this;
             _storageManager.item = _item;
-            _buildingManager.enabled = false;
-            _storageManager.enabled = true;
+            _buildingManager.currentBuildState = BuildState.Idle;
+            _storageManager.managerEnabled = true;
         }
         _rb.isKinematic = true;
         _collider.enabled = false;
@@ -99,8 +100,8 @@ public class PackageScript : MonoBehaviour
     private void OnDrop()
     {
         _buildingManager.StopBuilding();
-        _buildingManager.enabled = false;
-        _storageManager.enabled = false;
+        _buildingManager.currentBuildState = BuildState.Idle;
+        _storageManager.managerEnabled = false;
 
         _storageManager.item = null;
 

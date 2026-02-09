@@ -10,6 +10,7 @@ public class ItemManager : MonoBehaviour
 {
     static public ItemManager instance;
     private Dictionary<string, ItemData> itemDictionary;
+    public Dictionary<string, Item> scriptableItemDictionary;
     [SerializeField]private Item[] items;
 
     void Awake()
@@ -32,6 +33,20 @@ public class ItemManager : MonoBehaviour
     }
     void Start()
     {
+        scriptableItemDictionary = new Dictionary<string, Item>();
+
+        foreach (Item item in items)
+        {
+            if (!scriptableItemDictionary.ContainsKey(item.itemName))
+            {
+                scriptableItemDictionary.Add(item.itemName, item);
+            }
+            else
+            {
+                Debug.LogWarning($"Duplicate item name found: {item.itemName}. Please ensure all item names are unique.");
+            }
+        }
+
         itemDictionary = new Dictionary<string, ItemData>();
 
         foreach (Item item in items)

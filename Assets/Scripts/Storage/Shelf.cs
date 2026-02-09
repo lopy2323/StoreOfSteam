@@ -10,8 +10,9 @@ public class Shelf : MonoBehaviour
     [SerializeField] private StorageManager _storageManager;
 
     private ItemManager _itemManager;
+    public string ShelfName = "please input shelf prefab name here";
 
-    private void Start()
+    private void Awake()
     {
         _itemManager = FindAnyObjectByType<ItemManager>();
     }

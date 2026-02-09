@@ -20,7 +20,7 @@ public class ShelfSpawn : MonoBehaviour
     private GameObject _particleObject;
     private GameObject _particleForce;
 
-    private void Start()
+    private void Awake()
     {
         // Get the collider's bounds in local space
         Vector3 localSize = transform.InverseTransformVector(shelfCollider.bounds.size);
@@ -68,14 +68,22 @@ public class ShelfSpawn : MonoBehaviour
             Vector3 localOffset = (transform.right * xOffset) + (transform.forward * zOffset) + (transform.up * yOffset);
             Vector3 spawnPosition = shelfCollider.bounds.center + localOffset;
 
-            PlayAnimation(activePackageScript.transform.position, spawnPosition, _item.itemPrefab.GetComponent<MeshFilter>()?.sharedMesh);
-            GameObject spawned = Instantiate(_item.itemPrefab, spawnPosition, transform.rotation);
-            spawned.GetComponent<MeshRenderer>().enabled = false;
-            StartCoroutine(ShowItem(spawned));
+            if (activePackageScript != null)
+            {
 
-            _spawnedItems.Add(spawned);
-            activePackageScript.packageAmount--;
-            activePackageScript.Updatetext();
+                PlayAnimation(activePackageScript.transform.position, spawnPosition, _item.itemPrefab.GetComponent<MeshFilter>()?.sharedMesh);
+                GameObject spawned = Instantiate(_item.itemPrefab, spawnPosition, transform.rotation);
+                spawned.GetComponent<MeshRenderer>().enabled = false;
+                StartCoroutine(ShowItem(spawned));
+                _spawnedItems.Add(spawned);
+
+                activePackageScript.packageAmount--;
+                activePackageScript.Updatetext();
+            }else
+            {
+                GameObject spawned = Instantiate(_item.itemPrefab, spawnPosition, transform.rotation);
+                _spawnedItems.Add(spawned);
+            }
             amountOfItems++;
         }
         else
