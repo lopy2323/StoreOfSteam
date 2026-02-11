@@ -16,5 +16,6 @@ MonoBehaviour:
   width: 0.35
   height: 0.5
   depth: 0.11
-  marketPrice: 12
+  marketPrice: 19.99
+  currentPrice: 12
   itemPrefab: {fileID: 3375010112077671312, guid: ac434a9b24a6a574592aa519997faba2, type: 3}
