@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using TMPro;
+using System.Runtime.CompilerServices;
 
 public class ShelfSpawn : MonoBehaviour
 {
@@ -42,6 +44,7 @@ public class ShelfSpawn : MonoBehaviour
         {
             ShelfItem = _item;
             shelfScript.UpdateShelfItems();
+            GetComponentInChildren<TextMeshPro>().text = "$" + ItemManager.instance.itemDictionary[ShelfItem.name].currentPrice.ToString("F2");
         }
 
         // Calculate available width and depth after accounting for edge margins
