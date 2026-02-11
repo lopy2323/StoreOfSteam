@@ -10,7 +10,7 @@ public class Item : ScriptableObject
     public float width;
     public float height;
     public float depth;
-    public int marketPrice;
+    public float marketPrice;
 
     public GameObject itemPrefab;
 

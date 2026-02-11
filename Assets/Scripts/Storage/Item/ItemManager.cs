@@ -9,7 +9,7 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     static public ItemManager instance;
-    private Dictionary<string, ItemData> itemDictionary;
+    public Dictionary<string, ItemData> itemDictionary;
     public Dictionary<string, Item> scriptableItemDictionary;
     [SerializeField]private Item[] items;
 
@@ -51,6 +51,7 @@ public class ItemManager : MonoBehaviour
 
         foreach (Item item in items)
         {
+
             if (!itemDictionary.ContainsKey(item.itemName))
             {
                 ItemData newItemData = new ItemData

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880a99cd87b11cb4392bfdc7986a5cfd, type: 3}
+  m_Name: CerealBox
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemName: CerealBox
+  width: 0.002
+  height: 0.008
+  depth: 0.006
+  marketPrice: 19.99
+  currentPrice: 0
+  itemPrefab: {fileID: 5056158210198587726, guid: c08c25b686013824f988cb6e245f9a07, type: 3}
