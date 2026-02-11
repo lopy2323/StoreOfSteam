@@ -19,7 +19,8 @@ public class NPC : MonoBehaviour
         }
     }
 
-
+    private float nextActionTime = 0.2f;
+    private float timer = 0f;
     private float scrore = 100f;
     private List<NpcData> shoppinglist = new List<NpcData>();
     private Shelf _shelf;
@@ -140,14 +141,39 @@ public class NPC : MonoBehaviour
 
     // fase 3
 
+    void Update()
+    {
+        if (Time.time >= nextActionTime)
+        {
+            nextActionTime += 1f;
+            Npcfase1();
+        }
+    }
+
     private void Npcfase3()
     {
-        int left = _shelf.TakeItem(shoppinglist[0].name, shoppinglist[0].amounttoget);
-        if (left != 0)
+        if (timer >= nextActionTime)
         {
-            shoppinglist.Add(new NpcData("lol", left));
+            if (shoppinglist[0].amounttoget != 0)
+            {
+                int removed = _shelf.TakeItem(shoppinglist[0].name, 1);
+                if (removed != 0)
+                {
+                    shoppinglist[0].amounttoget -= 1;
+                    timer = 0f;
+                    Npcfase3();
+                }
+                if (removed == 0)
+                {
+                    shoppinglist.Add(new NpcData(shoppinglist[0].name, shoppinglist[0].amounttoget));
+                    Npcfase4();
+                }
+                if (shoppinglist[0].amounttoget == 0)
+                {
+                    Npcfase4();
+                }
+            }
         }
-        Npcfase4();
     }
 
     //fase 4
