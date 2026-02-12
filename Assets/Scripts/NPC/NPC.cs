@@ -2,7 +2,6 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 
@@ -18,10 +17,9 @@ public class NPC : MonoBehaviour
             this.amounttoget = amounttoget;
         }
     }
-
-    private float nextActionTime = 0.2f;
+    private bool End = false;
+    private float nextActionTime = 1f;
     private float timer = 0f;
-    private float scrore = 100f;
     private List<NpcData> shoppinglist = new List<NpcData>();
     private Shelf _shelf;
     public TypeOfCustomer typeOfCustomer = TypeOfCustomer.Workerclass;
@@ -34,6 +32,15 @@ public class NPC : MonoBehaviour
     int targetIndex;
     public int personID;
     private bool selectedNpc = false;
+
+    private Vector3? _currentDestination;
+    private bool _isFollowingPath;
+
+    [SerializeField] private float waypointTolerance = 0.05f;
+
+
+    public GameObject endpoint;
+
     public enum TypeOfCustomer
     {
         Workerclass,
@@ -47,8 +54,12 @@ public class NPC : MonoBehaviour
     }
     private void ItemSelectList(TypeOfCustomer type)
     {
-        shoppinglist.Add(new NpcData("lol",5));
-        shoppinglist.Add(new NpcData("lol", 5));
+        foreach(var keyValuePair in ItemManager.instance.itemDictionary)
+        {
+            int amount = UnityEngine.Random.Range(1, 5);
+            string name = keyValuePair.Key;
+            shoppinglist.Add(new NpcData(name, amount));
+        }
     }
 
     //fase 1
@@ -60,8 +71,14 @@ public class NPC : MonoBehaviour
             List<Shelf> shelves = ItemManager.instance.GetShelfs(shoppinglist[0].name);
             if (shelves.Count == 0)
             {
-                Debug.Log("No shelf found with item: " + shoppinglist[0]);
-                return;
+               if (shoppinglist.Count != 1)
+                {
+                    shoppinglist.Remove(shoppinglist[0]);
+                }
+               if (shoppinglist.Count == 1)
+                {
+                    Npcfase5();
+                }
             }
             if (selectedNpc == false)
             {
@@ -84,18 +101,19 @@ public class NPC : MonoBehaviour
             {
                 Vector3 target = _shelf._targetStandingPoint[0].position;
 
-                if (target != transform.position)
+                if (Vector3.Distance(transform.position, target) <= waypointTolerance)
                 {
-                    PathRequestManager.RequestPath(transform.position, target, OnPathFound);
-                } else if (target == transform.position && shoppinglist[0] != null)
-                {
-                    Npcfase3();
+                    if (shoppinglist[0] != null)
+                        Npcfase3();
+                    return;
                 }
+
+                RequestPathIfNeeded(target);
             }
         }
         if (shoppinglist.Count == 0)
         {
-            Debug.Log("Shopping list is empty for NPC");
+            Npcfase5();
         }
     }
 
@@ -116,18 +134,34 @@ public class NPC : MonoBehaviour
     {
         if (path == null || path.Length == 0)
         {
+            _isFollowingPath = false;
             yield break;
         }
+
+        _isFollowingPath = true;
 
         Vector3 currentWaypoint = path[targetIndex];
         while (true)
         {
-            if (transform.position == currentWaypoint)
+            if (Vector3.Distance(transform.position, currentWaypoint) <= waypointTolerance)
             {
                 targetIndex++;
                 if (targetIndex >= path.Length && !processingPath)
                 {
-                    Npcfase3();
+                    _isFollowingPath = false;
+                    if (shoppinglist.Count != 0)
+                    {
+                        Npcfase3();
+                    }
+                    if (shoppinglist.Count == 0 && End == true)
+                    {
+                        Destroy(gameObject);
+                    }
+                    
+                    if (shoppinglist.Count == 0 && End == false)
+                    {
+                        Npcfase5(); 
+                    }
                     yield break; // Reached the end of the path
                 }
                 // Only update currentWaypoint if targetIndex is valid
@@ -139,13 +173,27 @@ public class NPC : MonoBehaviour
         }
     }
 
+    private void RequestPathIfNeeded(Vector3 target)
+    {
+        if (processingPath)
+            return;
+
+        if (_isFollowingPath && _currentDestination.HasValue && Vector3.Distance(_currentDestination.Value, target) <= waypointTolerance)
+            return;
+
+        _currentDestination = target;
+        processingPath = true;
+        PathRequestManager.RequestPath(transform.position, target, OnPathFound);
+    }
+
     // fase 3
 
     void Update()
     {
-        if (Time.time >= nextActionTime)
+        Debug.Log("update" + timer);
+        timer += Time.deltaTime;
+        if (timer >= nextActionTime)
         {
-            nextActionTime += 1f;
             Npcfase1();
         }
     }
@@ -154,6 +202,8 @@ public class NPC : MonoBehaviour
     {
         if (timer >= nextActionTime)
         {
+            Debug.Log("log");
+            timer = 0f;
             if (shoppinglist[0].amounttoget != 0)
             {
                 int removed = _shelf.TakeItem(shoppinglist[0].name, 1);
@@ -183,5 +233,13 @@ public class NPC : MonoBehaviour
         shoppinglist.RemoveAt(0);
         selectedNpc = false;
         Npcfase1();
+    }
+
+    //fase 5
+    private void Npcfase5()
+    {
+        shoppinglist.Clear();
+        End = true;
+        RequestPathIfNeeded(endpoint.transform.position);
     }
 }
