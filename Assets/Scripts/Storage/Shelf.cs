@@ -5,7 +5,7 @@ public class Shelf : MonoBehaviour
 {
     public List<ShelfSpawn> StorageSpaces = new List<ShelfSpawn>();
 
-    [SerializeField] private List<Item> _storedItems = new List<Item>();
+    public List<Item> storedItems = new List<Item>();
     public Transform[] _targetStandingPoint;
     [SerializeField] private StorageManager _storageManager;
 
@@ -19,8 +19,8 @@ public class Shelf : MonoBehaviour
 
     public void UpdateShelfItems()
     {
-        _itemManager.RemoveShelfPosition(_storedItems, this);
-        _storedItems.Clear();
+        _itemManager.RemoveShelfPosition(storedItems, this);
+        storedItems.Clear();
         foreach (ShelfSpawn shelfSpawn in StorageSpaces)
         {
             if (shelfSpawn != null)
@@ -28,8 +28,8 @@ public class Shelf : MonoBehaviour
                 Item item = shelfSpawn.ShelfItem;
                 if (item != null)
                 {
-                    _storedItems.Add(item);
-                    _itemManager.AddShelfPosition(_storedItems, this);
+                    storedItems.Add(item);
+                    _itemManager.AddShelfPosition(storedItems, this);
                 }
             }
         }

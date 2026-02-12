@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class StorageManager : MonoBehaviour
 {
+    static public StorageManager instance;
+
     private bool isStorageOpen = true;
 
     public bool managerEnabled = false;
@@ -18,6 +20,11 @@ public class StorageManager : MonoBehaviour
     private float _nextFireTime;
 
     public PackageScript activePackageScript;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Update()
     {
@@ -40,8 +47,6 @@ public class StorageManager : MonoBehaviour
                 }
             }
         }
-
-        SaveUpdate();
     }
 
     private void HandleStorageClick()
@@ -85,10 +90,8 @@ public class StorageManager : MonoBehaviour
             activePackageScript.Updatetext();
     }
 
-    private void SaveUpdate()
+    public void SaveShelfs()
     {
-        if (Input.GetKeyDown(KeyCode.F4))
-        {
             var list = new List<ShelfData>();
             GameObject[] shelfObjects = GameObject.FindGameObjectsWithTag("Shelf");
             foreach (GameObject shelf in shelfObjects)
@@ -129,7 +132,6 @@ public class StorageManager : MonoBehaviour
 
             Debug.Log("Saving " + list.Count + " shelves.");
             SaveSystem.instance.SaveSection("TestSave", "shelfData", list);
-        }
     }
 }
 

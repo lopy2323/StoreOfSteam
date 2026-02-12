@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: CerealBox
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: CerealBox
-  width: 0.002
+  width: 0.006
   height: 0.008
-  depth: 0.006
+  depth: 0.002
   marketPrice: 19.99
-  currentPrice: 0
-  itemPrefab: {fileID: 5056158210198587726, guid: c08c25b686013824f988cb6e245f9a07, type: 3}
+  itemPrefab: {fileID: 1847677751958622646, guid: a006f4bc32d0a774a87b7fcbb47cd330, type: 3}
