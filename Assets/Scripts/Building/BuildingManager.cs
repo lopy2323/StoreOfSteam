@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NUnit.Framework.Constraints;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using TMPro;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -262,6 +263,10 @@ public class BuildingManager : MonoBehaviour
                 {
                     shelfspawns[i].SpawnItem(ItemManager.instance.scriptableItemDictionary[item.SubShelfs[i].itemName], null);
                 }
+                if (item.SubShelfs[i].itemName == null) continue;
+                shelfspawns[i].GetComponentInChildren<TextMeshPro>().text = "$" + ItemManager.instance.itemDictionary[item.SubShelfs[i].itemName].currentPrice.ToString("F2");
+                shelfspawns[i].GetComponentInChildren<MeshRenderer>().enabled = true;
+                shelfspawns[i].GetComponentInChildren<SpriteRenderer>().enabled = true;
             }
         }
     }

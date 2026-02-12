@@ -17,7 +17,7 @@ public class Shop : MonoBehaviour
         packageScript._buildingManager = BuildingManager;
         packageScript._PackageHolder = PackageHolder;
         packageScript.maxPackageAmount = 1;
-        packageScript._building = "TestShelf2";
+        packageScript.packageBuilding = "TestShelf2";
     }
 
 

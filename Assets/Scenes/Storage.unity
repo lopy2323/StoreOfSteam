@@ -885,7 +885,7 @@ GameObject:
   - component: {fileID: 377947958}
   m_Layer: 8
   m_Name: package
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -954,8 +954,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 703244917}
   _PackageHolder: {fileID: 1268860395}
   _packageText: {fileID: 1783286019}
-  _item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
-  _building: 
+  packageItem: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
+  packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
 --- !u!4 &377947961
@@ -1461,7 +1461,7 @@ GameObject:
   - component: {fileID: 606143094}
   m_Layer: 8
   m_Name: package (3)
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1530,8 +1530,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 703244917}
   _PackageHolder: {fileID: 1268860395}
   _packageText: {fileID: 1162493851}
-  _item: {fileID: 0}
-  _building: TestShelf2
+  packageItem: {fileID: 0}
+  packageBuilding: TestShelf2
   packageAmount: 1
   maxPackageAmount: 1
 --- !u!4 &606143097
@@ -1566,7 +1566,7 @@ GameObject:
   - component: {fileID: 606420121}
   m_Layer: 8
   m_Name: package (2)
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1635,8 +1635,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 703244917}
   _PackageHolder: {fileID: 1268860395}
   _packageText: {fileID: 671307457}
-  _item: {fileID: 11400000, guid: 1b29c09bb239a144eaaef386d4393dbb, type: 2}
-  _building: 
+  packageItem: {fileID: 11400000, guid: 1b29c09bb239a144eaaef386d4393dbb, type: 2}
+  packageBuilding: 
   packageAmount: 10
   maxPackageAmount: 1
 --- !u!4 &606420124
@@ -27528,6 +27528,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   repeatInterval: 0.2
+  packagePrefab: {fileID: 2569906585438274317, guid: 88491b165caf4bb4c9949bf52cefc0b3, type: 3}
+  _StoragepackageHolder: {fileID: 1268860395}
   item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
   activePackageScript: {fileID: 0}
 --- !u!1 &960467821
@@ -29080,7 +29082,7 @@ GameObject:
   - component: {fileID: 1697941661}
   m_Layer: 8
   m_Name: package (1)
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29149,8 +29151,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 703244917}
   _PackageHolder: {fileID: 1268860395}
   _packageText: {fileID: 80557748}
-  _item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
-  _building: 
+  packageItem: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
+  packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
 --- !u!4 &1697941664
