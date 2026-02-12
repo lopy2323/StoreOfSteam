@@ -42,6 +42,9 @@ public class ShelfSpawn : MonoBehaviour
         }
         if (ShelfItem == null)
         {
+            GetComponentInChildren<MeshRenderer>().enabled = true;
+            GetComponentInChildren<SpriteRenderer>().enabled = true;
+
             ShelfItem = _item;
             shelfScript.UpdateShelfItems();
             GetComponentInChildren<TextMeshPro>().text = "$" + ItemManager.instance.itemDictionary[ShelfItem.name].currentPrice.ToString("F2");

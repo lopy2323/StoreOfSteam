@@ -71,14 +71,6 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        foreach (var itemData in itemDictionary.Values)
-        {
-            //Debug.Log(itemData.itemName + " has shelfs: " + itemData.shelfs.Count);
-        }
-    }
-
 
     public void AddShelfPosition(List<Item> items, Shelf shelf)
     {
@@ -124,4 +116,52 @@ public class ItemManager : MonoBehaviour
             return new List<Shelf>();
         }
     }
+
+    public void SaveItems()
+    {
+        List<ItemSaveData> list = new List<ItemSaveData>();
+        foreach (Item item in items)
+        {
+            ItemSaveData itemSaveData = new ItemSaveData
+            {
+                itemName = item.itemName,
+                currentPrice = itemDictionary[item.itemName].currentPrice,
+                inflation = itemDictionary[item.itemName].inflation
+            };
+            list.Add(itemSaveData);
+        }
+
+        SaveSystem.instance.SaveSection("TestSave", "ItemData", list);
+    }
+
+    public void LoadItems()
+    {
+        foreach (Item item in items)
+        {
+            var list = SaveSystem.instance.LoadSection<List<ItemSaveData>>("TestSave", "shelfData");
+            foreach (ItemSaveData itemSaveData in list)
+            {
+                if (itemSaveData.itemName == item.itemName)
+                {
+                    if (itemDictionary.ContainsKey(itemSaveData.itemName))
+                    {
+                        itemDictionary[itemSaveData.itemName].currentPrice = itemSaveData.currentPrice;
+                        itemDictionary[itemSaveData.itemName].inflation = itemSaveData.inflation;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Item name {itemSaveData.itemName} not found in itemDictionary.");
+                    }
+                }
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public struct ItemSaveData
+{
+    public string itemName;
+    public float currentPrice;
+    public float inflation;
 }

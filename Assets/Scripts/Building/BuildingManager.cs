@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 
 public class BuildingManager : MonoBehaviour
 {
+    static public BuildingManager instance;
+
     private Vector3 mousepos;
     [SerializeField] private GameObject lol;
 
@@ -37,7 +39,12 @@ public class BuildingManager : MonoBehaviour
     public BuildState currentBuildState = BuildState.Idle;
 
     public string _currentBuilding;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         foreach (BuildObject buildObject in buildObjects)
@@ -55,13 +62,9 @@ public class BuildingManager : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            LoadShelfs();
-        }
 
 
-            if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             rotating = true;
             _currentRotation += 1;
@@ -241,7 +244,7 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-    private void LoadShelfs()
+    public void LoadShelfs()
     {
         var list = SaveSystem.instance.LoadSection<List<ShelfData>>("TestSave", "shelfData");
         Debug.Log("Loaded " + list.Count + " shelves.");

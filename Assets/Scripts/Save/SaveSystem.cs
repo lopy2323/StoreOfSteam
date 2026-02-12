@@ -10,6 +10,35 @@ public class SaveSystem : MonoBehaviour
     {
         instance = this;
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            if (GridManager.instance != null)
+                GridManager.instance.LoadGrid();
+
+            if (ItemManager.instance != null)
+                ItemManager.instance.LoadItems();
+
+            if (BuildingManager.instance != null)
+                BuildingManager.instance.LoadShelfs();
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            if (GridManager.instance != null)
+                GridManager.instance.SaveGrid();
+
+            if (ItemManager.instance != null)
+                ItemManager.instance.SaveItems();
+
+            if (StorageManager.instance != null)
+                StorageManager.instance.SaveShelfs();
+
+        }
+    }
     public void SaveSection<T>(string saveFolder, string sectionName, T data)
     {
         Debug.Log($"Saving section: {sectionName} in folder: {saveFolder}");
