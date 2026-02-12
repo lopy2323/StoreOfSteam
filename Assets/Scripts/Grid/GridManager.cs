@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
 public class GridManager : MonoBehaviour
@@ -11,10 +11,28 @@ public class GridManager : MonoBehaviour
     public Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
     public GameObject buildObject;
 
+    static bool savegame = false;
+
     void Awake()
     {
         instance = this;
-        ScanTilemap();
+        if (!savegame)
+        {
+            ScanTilemap();
+        }
+
+
+        if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 
     void ScanTilemap()
@@ -55,5 +73,41 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+
+    public void SaveGrid()
+    {
+        var list = new List<TileSaveData>();
+
+        foreach (var kvp in tileDataMap)
+        {
+            list.Add(new TileSaveData
+            {
+                position = kvp.Key,
+                occupied = kvp.Value.occupied
+            });
+        }
+
+        SaveSystem.instance.SaveSection("TestSave", "gridData", list);
+    }
+
+    public void LoadGrid()
+    {
+        var list = SaveSystem.instance.LoadSection<List<TileSaveData>>("TestSave", "gridData");
+        foreach (var item in list)
+        {
+            if (tileDataMap.ContainsKey(item.position))
+            {
+                tileDataMap[item.position].occupied = item.occupied;
+            }
+        }
+        savegame = true;
+    }
+}
+
+[System.Serializable]
+public struct TileSaveData
+{
+    public Vector3Int position;
+    public bool occupied;
 }
 

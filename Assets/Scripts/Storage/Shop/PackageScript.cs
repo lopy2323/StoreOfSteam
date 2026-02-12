@@ -1,19 +1,20 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static BuildingManager;
 
 public class PackageScript : MonoBehaviour
 {
 
     [Header("References")]
-    [SerializeField] private StorageManager _storageManager;
-    [SerializeField] private BuildingManager _buildingManager;
-    [SerializeField] private Transform _PackageHolder;
+    public StorageManager _storageManager;
+    public BuildingManager _buildingManager;
+    public Transform _PackageHolder;
     [SerializeField] private TextMeshPro _packageText;
 
     [Header("Package Info: Assign either an Item or a Building, not both.")]
-    [SerializeField] private Item _item;
-    [SerializeField] private string _building = "Please insert building name here";
+    public Item _item;
+    public string _building = "Please insert building name here";
 
     [Header("Package Settings, if item is building this does not matter - only set packageAmount")]
     public int packageAmount = 1;
@@ -80,15 +81,15 @@ public class PackageScript : MonoBehaviour
         if (_isBuilding)
         {
             _buildingManager._currentBuilding = _building;
-            _buildingManager.enabled = true;
-            _storageManager.enabled = false;
+            _buildingManager.currentBuildState = BuildState.Building;
+            _storageManager.managerEnabled = false;
         }
         else
         {
             _storageManager.activePackageScript = this;
             _storageManager.item = _item;
-            _buildingManager.enabled = false;
-            _storageManager.enabled = true;
+            _buildingManager.currentBuildState = BuildState.Idle;
+            _storageManager.managerEnabled = true;
         }
         _rb.isKinematic = true;
         _collider.enabled = false;
@@ -99,8 +100,8 @@ public class PackageScript : MonoBehaviour
     private void OnDrop()
     {
         _buildingManager.StopBuilding();
-        _buildingManager.enabled = false;
-        _storageManager.enabled = false;
+        _buildingManager.currentBuildState = BuildState.Idle;
+        _storageManager.managerEnabled = false;
 
         _storageManager.item = null;
 

@@ -1,21 +1,28 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Collections;
+using TMPro;
+using System.Runtime.CompilerServices;
 
 public class ShelfSpawn : MonoBehaviour
 {
     [SerializeField] private Collider shelfCollider;
     [SerializeField] private Shelf shelfScript;
+    [SerializeField] private GameObject _particle;
     public Item ShelfItem = null;
 
     private float _shelfHeight;
     private float _shelfWidth;
     private float _shelfDepth;
 
-    private int amountOfItems;
+    public int amountOfItems;
     private List<GameObject> _spawnedItems = new List<GameObject>();
 
-    private void Start()
+    private GameObject _particleObject;
+    private GameObject _particleForce;
+
+    private void Awake()
     {
         // Get the collider's bounds in local space
         Vector3 localSize = transform.InverseTransformVector(shelfCollider.bounds.size);
@@ -35,8 +42,12 @@ public class ShelfSpawn : MonoBehaviour
         }
         if (ShelfItem == null)
         {
+            GetComponentInChildren<MeshRenderer>().enabled = true;
+            GetComponentInChildren<SpriteRenderer>().enabled = true;
+
             ShelfItem = _item;
             shelfScript.UpdateShelfItems();
+            GetComponentInChildren<TextMeshPro>().text = "$" + ItemManager.instance.itemDictionary[ShelfItem.name].currentPrice.ToString("F2");
         }
 
         // Calculate available width and depth after accounting for edge margins
@@ -63,9 +74,22 @@ public class ShelfSpawn : MonoBehaviour
             Vector3 localOffset = (transform.right * xOffset) + (transform.forward * zOffset) + (transform.up * yOffset);
             Vector3 spawnPosition = shelfCollider.bounds.center + localOffset;
 
-            _spawnedItems.Add(Instantiate(_item.itemPrefab, spawnPosition, transform.rotation));
-            activePackageScript.packageAmount--;
-            activePackageScript.Updatetext();
+            if (activePackageScript != null)
+            {
+
+                PlayAnimation(activePackageScript.transform.position, spawnPosition, _item.itemPrefab.GetComponent<MeshFilter>()?.sharedMesh);
+                GameObject spawned = Instantiate(_item.itemPrefab, spawnPosition, transform.rotation);
+                spawned.GetComponent<MeshRenderer>().enabled = false;
+                StartCoroutine(ShowItem(spawned));
+                _spawnedItems.Add(spawned);
+
+                activePackageScript.packageAmount--;
+                activePackageScript.Updatetext();
+            }else
+            {
+                GameObject spawned = Instantiate(_item.itemPrefab, spawnPosition, transform.rotation);
+                _spawnedItems.Add(spawned);
+            }
             amountOfItems++;
         }
         else
@@ -74,7 +98,13 @@ public class ShelfSpawn : MonoBehaviour
         }
     }
 
-    public void RemoveItem(Item item, Action<bool> callback)
+    private IEnumerator ShowItem(GameObject spawned)
+    {
+        yield return new WaitForSeconds(0.15f);
+        spawned.GetComponent<MeshRenderer>().enabled = true;
+    }
+
+    public void RemoveItem(Item item, Action<bool> callback, Vector3 particleEnd)
     {
         if (item != ShelfItem) return;
         if (amountOfItems > 0)
@@ -83,6 +113,8 @@ public class ShelfSpawn : MonoBehaviour
             callback?.Invoke(true);
             GameObject itemToRemove = _spawnedItems[_spawnedItems.Count - 1];
             _spawnedItems.RemoveAt(_spawnedItems.Count - 1);
+
+            PlayAnimation(itemToRemove.transform.position, particleEnd, item.itemPrefab.GetComponent<MeshFilter>()?.sharedMesh);
             Destroy(itemToRemove);
         }
         if (amountOfItems == 0)
@@ -112,5 +144,29 @@ public class ShelfSpawn : MonoBehaviour
         }
 
         return toRemove;
+    }
+
+    private void PlayAnimation(Vector3 startingLocation, Vector3 endLocation, Mesh itemMesh)
+    {
+        GameObject spawnedParticle = Instantiate(_particle, startingLocation, transform.rotation);
+        GameObject forcefieldChild = spawnedParticle.transform.Find("Forcefield")?.gameObject;
+        GameObject particle = spawnedParticle.transform.Find("PackageParticle")?.gameObject;
+
+        if (particle != null)
+        {
+            var ps = particle.GetComponent<ParticleSystem>();
+
+            var psMain = ps.main;
+            psMain.startRotation = transform.eulerAngles.y * Mathf.Deg2Rad;
+
+            var psRenderer = particle.GetComponent<ParticleSystemRenderer>();
+            if (itemMesh != null)
+            {
+                psRenderer.mesh = itemMesh;
+                Debug.Log("Assigned mesh to particle system: " + itemMesh.name);
+            }
+        }
+        forcefieldChild.transform.position = endLocation;
+        Destroy(spawnedParticle, 0.5f);
     }
 }

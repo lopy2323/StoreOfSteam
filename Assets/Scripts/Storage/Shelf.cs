@@ -5,21 +5,22 @@ public class Shelf : MonoBehaviour
 {
     public List<ShelfSpawn> StorageSpaces = new List<ShelfSpawn>();
 
-    [SerializeField] private List<Item> _storedItems = new List<Item>();
+    public List<Item> storedItems = new List<Item>();
     public Transform[] _targetStandingPoint;
     [SerializeField] private StorageManager _storageManager;
 
     private ItemManager _itemManager;
+    public string ShelfName = "please input shelf prefab name here";
 
-    private void Start()
+    private void Awake()
     {
         _itemManager = FindAnyObjectByType<ItemManager>();
     }
 
     public void UpdateShelfItems()
     {
-        _itemManager.RemoveShelfPosition(_storedItems, this);
-        _storedItems.Clear();
+        _itemManager.RemoveShelfPosition(storedItems, this);
+        storedItems.Clear();
         foreach (ShelfSpawn shelfSpawn in StorageSpaces)
         {
             if (shelfSpawn != null)
@@ -27,8 +28,8 @@ public class Shelf : MonoBehaviour
                 Item item = shelfSpawn.ShelfItem;
                 if (item != null)
                 {
-                    _storedItems.Add(item);
-                    _itemManager.AddShelfPosition(_storedItems, this);
+                    storedItems.Add(item);
+                    _itemManager.AddShelfPosition(storedItems, this);
                 }
             }
         }
@@ -45,7 +46,8 @@ public class Shelf : MonoBehaviour
                 {
                     int removed = shelfSpawn.RemoveItemNPC(item, removeAmount);
                     UpdateShelfItems();
-                    return removed;
+                    
+                    return removeAmount - removed;
                 }
             }
         }

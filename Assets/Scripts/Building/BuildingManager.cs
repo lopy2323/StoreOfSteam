@@ -3,9 +3,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using NUnit.Framework.Constraints;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public class BuildingManager : MonoBehaviour
 {
+    static public BuildingManager instance;
+
     private Vector3 mousepos;
     [SerializeField] private GameObject lol;
 
@@ -27,16 +30,21 @@ public class BuildingManager : MonoBehaviour
 
     private bool rotating = false;
 
-    private enum BuildState
+    public enum BuildState
     {
         Idle,
         Building
     }
 
-    private BuildState currentBuildState = BuildState.Building;
+    public BuildState currentBuildState = BuildState.Idle;
 
     public string _currentBuilding;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         foreach (BuildObject buildObject in buildObjects)
@@ -50,18 +58,18 @@ public class BuildingManager : MonoBehaviour
                 height = buildObject.height
             };
             BuildingDict.Add(buildObject.Name, building);
-            Debug.Log("Added " + buildObject.Name + " to BuildingDict");
         }
     }
     void Update()
     {
+
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             rotating = true;
             _currentRotation += 1;
             if (_currentRotation >= 4)
             {
-                Debug.Log("Reset Rotation");
                 _currentRotation = 0;
 
             }
@@ -79,7 +87,6 @@ public class BuildingManager : MonoBehaviour
             {
                 if (_currentHoloMeshRenderer.material.color == Color.red)
                 {
-                    Debug.Log("Cannot build here!");
                 }
                 if (_currentHoloMeshRenderer.material.color == Color.green)
                 {
@@ -94,7 +101,10 @@ public class BuildingManager : MonoBehaviour
                         }
                         data.occupied = true;
                     }
-                    Instantiate(BuildingDict[_currentBuilding].FinalPrefab, _currentHoloBuilding.transform.position, _currentQuaternion);
+                    GameObject shelf = Instantiate(BuildingDict[_currentBuilding].FinalPrefab, _currentHoloBuilding.transform.position, _currentQuaternion);
+                    Shelf NameGiving = shelf.GetComponent<Shelf>();
+                    NameGiving.ShelfName = _currentBuilding;
+
                     instantiated = false;
                     Destroy(_currentHoloBuilding);
                     _currentHoloBuilding = null;
@@ -116,16 +126,13 @@ public class BuildingManager : MonoBehaviour
                     _oldlist.Clear();
                     _oldRotation = _currentRotation;
                     _currentQuaternion = Quaternion.Euler(0, _currentRotation * 90, 0);
-                    Debug.Log("Rotating to " + _currentRotation + _currentQuaternion);
                     if (_currentHoloBuilding != null)
                     {
                         _currentHoloBuilding.transform.rotation = _currentQuaternion;
-                        Debug.Log("Rotated to " + _currentRotation * 90 + " degrees");
 
                     }
                     if (_currentRotation >= 4)
                     {
-                        Debug.Log("Reset Rotation");
                         _currentQuaternion = Quaternion.Euler(0, 0, 0);
 
                     }
@@ -236,4 +243,28 @@ public class BuildingManager : MonoBehaviour
             _currentHoloMeshRenderer = null;
         }
     }
+
+    public void LoadShelfs()
+    {
+        var list = SaveSystem.instance.LoadSection<List<ShelfData>>("TestSave", "shelfData");
+        Debug.Log("Loaded " + list.Count + " shelves.");
+        foreach (var item in list)
+        {
+            GameObject spawned = Instantiate(BuildingDict[item.name].FinalPrefab, new Vector3(item.position[0], item.position[1], item.position[2]), Quaternion.Euler(item.rotation[0], item.rotation[1], item.rotation[2]));
+            Shelf shelfScript = spawned.GetComponent<Shelf>();
+            shelfScript.ShelfName = item.name;
+            List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
+            shelfspawns.AddRange(spawned.GetComponentsInChildren<ShelfSpawn>());
+            shelfspawns.Reverse();
+            for (int i = 0; i < shelfspawns.Count; i++)
+            {
+                for (int j = 0; j < item.SubShelfs[i].amount; j++)
+                {
+                    shelfspawns[i].SpawnItem(ItemManager.instance.scriptableItemDictionary[item.SubShelfs[i].itemName], null);
+                }
+            }
+        }
+    }
+    public GameObject itemPrefab;
+
 }

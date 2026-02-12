@@ -8,16 +8,50 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-    private Dictionary<string, ItemData> itemDictionary;
+    static public ItemManager instance;
+    public Dictionary<string, ItemData> itemDictionary;
+    public Dictionary<string, Item> scriptableItemDictionary;
     [SerializeField]private Item[] items;
 
-
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
     void Start()
     {
+        scriptableItemDictionary = new Dictionary<string, Item>();
+
+        foreach (Item item in items)
+        {
+            if (!scriptableItemDictionary.ContainsKey(item.itemName))
+            {
+                scriptableItemDictionary.Add(item.itemName, item);
+            }
+            else
+            {
+                Debug.LogWarning($"Duplicate item name found: {item.itemName}. Please ensure all item names are unique.");
+            }
+        }
+
         itemDictionary = new Dictionary<string, ItemData>();
 
         foreach (Item item in items)
         {
+
             if (!itemDictionary.ContainsKey(item.itemName))
             {
                 ItemData newItemData = new ItemData
@@ -34,14 +68,6 @@ public class ItemManager : MonoBehaviour
             {
                 Debug.LogWarning($"Duplicate item name found: {item.itemName}. Please ensure all item names are unique.");
             }
-        }
-    }
-
-    private void Update()
-    {
-        foreach (var itemData in itemDictionary.Values)
-        {
-            //Debug.Log(itemData.itemName + " has shelfs: " + itemData.shelfs.Count);
         }
     }
 
@@ -90,4 +116,52 @@ public class ItemManager : MonoBehaviour
             return new List<Shelf>();
         }
     }
+
+    public void SaveItems()
+    {
+        List<ItemSaveData> list = new List<ItemSaveData>();
+        foreach (Item item in items)
+        {
+            ItemSaveData itemSaveData = new ItemSaveData
+            {
+                itemName = item.itemName,
+                currentPrice = itemDictionary[item.itemName].currentPrice,
+                inflation = itemDictionary[item.itemName].inflation
+            };
+            list.Add(itemSaveData);
+        }
+
+        SaveSystem.instance.SaveSection("TestSave", "ItemData", list);
+    }
+
+    public void LoadItems()
+    {
+        foreach (Item item in items)
+        {
+            var list = SaveSystem.instance.LoadSection<List<ItemSaveData>>("TestSave", "shelfData");
+            foreach (ItemSaveData itemSaveData in list)
+            {
+                if (itemSaveData.itemName == item.itemName)
+                {
+                    if (itemDictionary.ContainsKey(itemSaveData.itemName))
+                    {
+                        itemDictionary[itemSaveData.itemName].currentPrice = itemSaveData.currentPrice;
+                        itemDictionary[itemSaveData.itemName].inflation = itemSaveData.inflation;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Item name {itemSaveData.itemName} not found in itemDictionary.");
+                    }
+                }
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public struct ItemSaveData
+{
+    public string itemName;
+    public float currentPrice;
+    public float inflation;
 }
