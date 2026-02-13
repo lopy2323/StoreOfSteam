@@ -13,6 +13,7 @@ public class StorageManager : MonoBehaviour
     public bool managerEnabled = false;
 
     [SerializeField] private LayerMask Storagelayer;
+    [SerializeField] private LayerMask packageLayer;
     [SerializeField] private float repeatInterval = 0.2f;
     [SerializeField] private GameObject packagePrefab;
     [SerializeField] private Transform _StoragepackageHolder;
@@ -40,6 +41,7 @@ public class StorageManager : MonoBehaviour
                     HandleStorageClick();
                 }
             }
+
             if (isStorageOpen == true)
             {
                 if (Input.GetKey(KeyCode.Mouse1) && Time.time >= _nextFireTime)

@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using static BuildingManager;
@@ -10,6 +11,7 @@ public class PackageScript : MonoBehaviour
     public StorageManager _storageManager;
     public BuildingManager _buildingManager;
     public Transform _PackageHolder;
+    [SerializeField] private LayerMask packageLayer;
     [SerializeField] private TextMeshPro _packageText;
 
     [Header("Package Info: Assign either an Item or a Building, not both.")]
@@ -22,6 +24,7 @@ public class PackageScript : MonoBehaviour
 
     private bool _isBuilding;
     private bool _isHoldingPackage = false;
+    public bool isInStorage = false;
 
     private Rigidbody _rb;
     private Collider _collider;
@@ -70,8 +73,46 @@ public class PackageScript : MonoBehaviour
             gameObject.transform.rotation = _PackageHolder.rotation;
             if (Input.GetKeyDown(KeyCode.F))
             {
-                _isHoldingPackage = false;
-                OnDrop();
+                GivePackage();
+                if (!isInStorage)
+                {
+                    _isHoldingPackage = false;
+                    OnDrop();
+                }
+            }
+        }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    TakePackage();
+                }
+        }
+    }
+
+    private void GivePackage()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit packageHit, 2f, packageLayer))
+        {
+            GameObject hitObject = packageHit.collider.gameObject;
+
+            if (hitObject.TryGetComponent<StorageShelfSpawn>(out var storageShelfSpawn))
+            {
+                storageShelfSpawn.InputStorageBox(this);
+            }
+        }
+    }
+
+    private void TakePackage()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 2f, packageLayer))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            if (hitObject.TryGetComponent<StorageShelfSpawn>(out var storageShelfSpawn))
+            {
+                storageShelfSpawn.GetStorageBox();
             }
         }
     }
@@ -98,8 +139,10 @@ public class PackageScript : MonoBehaviour
         _isHoldingPackage = true;
     }
 
-    private void OnDrop()
+    public void OnDrop()
     {
+        _isHoldingPackage = false;
+
         _buildingManager.StopBuilding();
         _buildingManager.currentBuildState = BuildState.Idle;
         _storageManager.managerEnabled = false;
