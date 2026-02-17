@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NUnit.Framework.Constraints;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using TMPro;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -246,24 +247,36 @@ public class BuildingManager : MonoBehaviour
 
     public void LoadShelfs()
     {
-        var list = SaveSystem.instance.LoadSection<List<ShelfData>>("TestSave", "shelfData");
+        var list = SaveSystem.instance.LoadSection<List<BuildingData>>("TestSave", "shelfData");
         Debug.Log("Loaded " + list.Count + " shelves.");
-        foreach (var item in list)
+
+        foreach (var shelfs in list)
         {
-            GameObject spawned = Instantiate(BuildingDict[item.name].FinalPrefab, new Vector3(item.position[0], item.position[1], item.position[2]), Quaternion.Euler(item.rotation[0], item.rotation[1], item.rotation[2]));
-            Shelf shelfScript = spawned.GetComponent<Shelf>();
-            shelfScript.ShelfName = item.name;
-            List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
-            shelfspawns.AddRange(spawned.GetComponentsInChildren<ShelfSpawn>());
-            shelfspawns.Reverse();
-            for (int i = 0; i < shelfspawns.Count; i++)
+            if (shelfs.ListName == "Shelfs")
             {
-                for (int j = 0; j < item.SubShelfs[i].amount; j++)
+                foreach (var item in shelfs.shelfData)
                 {
-                    shelfspawns[i].SpawnItem(ItemManager.instance.scriptableItemDictionary[item.SubShelfs[i].itemName], null);
+                    GameObject spawned = Instantiate(BuildingDict[item.name].FinalPrefab, new Vector3(item.position[0], item.position[1], item.position[2]), Quaternion.Euler(item.rotation[0], item.rotation[1], item.rotation[2]));
+                    Shelf shelfScript = spawned.GetComponent<Shelf>();
+                    shelfScript.ShelfName = item.name;
+                    List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
+                    shelfspawns.AddRange(spawned.GetComponentsInChildren<ShelfSpawn>());
+                    shelfspawns.Reverse();
+                    for (int i = 0; i < shelfspawns.Count; i++)
+                    {
+                        for (int j = 0; j < item.SubShelfs[i].amount; j++)
+                        {
+                            shelfspawns[i].SpawnItem(ItemManager.instance.scriptableItemDictionary[item.SubShelfs[i].itemName], null);
+                        }
+                        if (item.SubShelfs[i].itemName == null) continue;
+                        shelfspawns[i].GetComponentInChildren<TextMeshPro>().text = "$" + ItemManager.instance.itemDictionary[item.SubShelfs[i].itemName].currentPrice.ToString("F2");
+                        shelfspawns[i].GetComponentInChildren<MeshRenderer>().enabled = true;
+                        shelfspawns[i].GetComponentInChildren<SpriteRenderer>().enabled = true;
+                    }
                 }
             }
         }
+
     }
     public GameObject itemPrefab;
 

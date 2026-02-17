@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 public class SaveSystem : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class SaveSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
+            var stopwatch = Stopwatch.StartNew();
+
             if (GridManager.instance != null)
                 GridManager.instance.LoadGrid();
 
@@ -23,11 +26,18 @@ public class SaveSystem : MonoBehaviour
 
             if (BuildingManager.instance != null)
                 BuildingManager.instance.LoadShelfs();
-        }
 
+            if (StorageManager.instance != null)
+                StorageManager.instance.LoadPackages();
+
+            stopwatch.Stop();
+            UnityEngine.Debug.Log($"Load operations took {stopwatch.ElapsedMilliseconds} ms");
+        }
 
         if (Input.GetKeyDown(KeyCode.F4))
         {
+            var stopwatch = Stopwatch.StartNew();
+
             if (GridManager.instance != null)
                 GridManager.instance.SaveGrid();
 
@@ -36,12 +46,15 @@ public class SaveSystem : MonoBehaviour
 
             if (StorageManager.instance != null)
                 StorageManager.instance.SaveShelfs();
+                StorageManager.instance.SavePackages();
 
+            stopwatch.Stop();
+            UnityEngine.Debug.Log($"Save operations took {stopwatch.ElapsedMilliseconds} ms");
         }
     }
     public void SaveSection<T>(string saveFolder, string sectionName, T data)
     {
-        Debug.Log($"Saving section: {sectionName} in folder: {saveFolder}");
+        UnityEngine.Debug.Log($"Saving section: {sectionName} in folder: {saveFolder}");
         string dir = Path.Combine(Application.persistentDataPath, saveFolder);
         Directory.CreateDirectory(dir);
         string path = Path.Combine(dir, sectionName + ".json");
