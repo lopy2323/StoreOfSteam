@@ -96,46 +96,59 @@ public class StorageManager : MonoBehaviour
 
     public void SaveShelfs()
     {
-            var list = new List<ShelfData>();
-            GameObject[] shelfObjects = GameObject.FindGameObjectsWithTag("Shelf");
-            foreach (GameObject shelf in shelfObjects)
-            {
-                List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
-                shelfspawns.AddRange(shelf.GetComponentsInChildren<ShelfSpawn>());
-                shelfspawns.Reverse();
-                ShelfData data = new ShelfData
-                {
-                    position = new float[] { shelf.transform.position.x, shelf.transform.position.y, shelf.transform.position.z },
-                    rotation = new float[] { shelf.transform.rotation.eulerAngles.x, shelf.transform.rotation.eulerAngles.y, shelf.transform.rotation.eulerAngles.z },
-                    name = shelf.GetComponent<Shelf>().ShelfName,
-                    SubShelfs = new List<SubshelfData>()
-                };
-                foreach (var item in shelfspawns)
-                {
-                    if (item.ShelfItem != null)
-                    {
-                        SubshelfData subData = new SubshelfData
-                        {
-                            itemName = item.ShelfItem.itemName,
-                            amount = item.amountOfItems
-                        };
-                        data.SubShelfs.Add(subData);
-                    }
-                    else
-                    {
-                        SubshelfData subData = new SubshelfData
-                        {
-                            itemName = null,
-                            amount = 0
-                        };
-                        data.SubShelfs.Add(subData);
-                    }
-                }
-                list.Add(data);
-            }
+        var BuildingList = new List<BuildingData>();
 
-            Debug.Log("Saving " + list.Count + " shelves.");
-            SaveSystem.instance.SaveSection("TestSave", "shelfData", list);
+        BuildingList.Add(SaveItemShelfs());
+
+        SaveSystem.instance.SaveSection("TestSave", "shelfData", BuildingList);
+    }
+
+    public BuildingData SaveItemShelfs()
+    {
+        var list = new List<ShelfData>();
+        GameObject[] shelfObjects = GameObject.FindGameObjectsWithTag("Shelf");
+        foreach (GameObject shelf in shelfObjects)
+        {
+            List<ShelfSpawn> shelfspawns = new List<ShelfSpawn>();
+            shelfspawns.AddRange(shelf.GetComponentsInChildren<ShelfSpawn>());
+            shelfspawns.Reverse();
+            ShelfData data = new ShelfData
+            {
+                position = new float[] { shelf.transform.position.x, shelf.transform.position.y, shelf.transform.position.z },
+                rotation = new float[] { shelf.transform.rotation.eulerAngles.x, shelf.transform.rotation.eulerAngles.y, shelf.transform.rotation.eulerAngles.z },
+                name = shelf.GetComponent<Shelf>().ShelfName,
+                SubShelfs = new List<SubshelfData>()
+            };
+            foreach (var item in shelfspawns)
+            {
+                if (item.ShelfItem != null)
+                {
+                    SubshelfData subData = new SubshelfData
+                    {
+                        itemName = item.ShelfItem.itemName,
+                        amount = item.amountOfItems
+                    };
+                    data.SubShelfs.Add(subData);
+                }
+                else
+                {
+                    SubshelfData subData = new SubshelfData
+                    {
+                        itemName = null,
+                        amount = 0
+                    };
+                    data.SubShelfs.Add(subData);
+                }
+            }
+            list.Add(data);
+        }
+
+        BuildingData buildingData = new BuildingData
+        {
+            ListName = "Shelfs",
+            shelfData = list
+        };
+        return buildingData;
     }
 
 
@@ -187,6 +200,12 @@ public class StorageManager : MonoBehaviour
 }
 
 [System.Serializable]
+
+public struct BuildingData
+{
+    public string ListName;
+    public List<ShelfData> shelfData;
+}
 public struct ShelfData
 {
     public float[] position;
