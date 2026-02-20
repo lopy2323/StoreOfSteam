@@ -3795,7 +3795,7 @@ MonoBehaviour:
   _PackageHolder: {fileID: 2040436871}
   _packageText: {fileID: 527033222}
   packageItem: {fileID: 0}
-  packageBuilding: 
+  packageBuilding: TestShelf2
   packageAmount: 1
   maxPackageAmount: 1
 --- !u!4 &1607508408
