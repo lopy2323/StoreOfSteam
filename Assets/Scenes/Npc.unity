@@ -664,6 +664,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   repeatInterval: 0.2
+  packagePrefab: {fileID: 0}
+  _StoragepackageHolder: {fileID: 0}
   item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
   activePackageScript: {fileID: 0}
 --- !u!1 &177664216
@@ -1406,8 +1408,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 1870965748}
   _PackageHolder: {fileID: 2040436871}
   _packageText: {fileID: 616240941}
-  _item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
-  _building: 
+  packageItem: {fileID: 0}
+  packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
 --- !u!4 &446837075
@@ -2670,7 +2672,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.2000122, y: 0.4000244}
+  m_AnchoredPosition: {x: 0.19995117, y: 0.4000244}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1199314225
@@ -3289,8 +3291,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 1870965748}
   _PackageHolder: {fileID: 2040436871}
   _packageText: {fileID: 1926082697}
-  _item: {fileID: 11400000, guid: 1b29c09bb239a144eaaef386d4393dbb, type: 2}
-  _building: 
+  packageItem: {fileID: 0}
+  packageBuilding: 
   packageAmount: 10
   maxPackageAmount: 1
 --- !u!4 &1379237923
@@ -3613,8 +3615,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 1870965748}
   _PackageHolder: {fileID: 2040436871}
   _packageText: {fileID: 400294904}
-  _item: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
-  _building: 
+  packageItem: {fileID: 0}
+  packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
 --- !u!4 &1565627248
@@ -3792,8 +3794,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 1870965748}
   _PackageHolder: {fileID: 2040436871}
   _packageText: {fileID: 527033222}
-  _item: {fileID: 0}
-  _building: TestShelf2
+  packageItem: {fileID: 0}
+  packageBuilding: TestShelf2
   packageAmount: 1
   maxPackageAmount: 1
 --- !u!4 &1607508408
