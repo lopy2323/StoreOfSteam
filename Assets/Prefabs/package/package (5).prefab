@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 4685701107656967822}
   m_Layer: 8
   m_Name: package (5)
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -358,8 +358,8 @@ MonoBehaviour:
   _buildingManager: {fileID: 0}
   _PackageHolder: {fileID: 0}
   _packageText: {fileID: 1896328526166114235}
-  _item: {fileID: 0}
-  _building: 
+  packageItem: {fileID: 0}
+  packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
 --- !u!65 &7925858715339823122

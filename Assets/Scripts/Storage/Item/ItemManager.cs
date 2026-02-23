@@ -138,7 +138,7 @@ public class ItemManager : MonoBehaviour
     {
         foreach (Item item in items)
         {
-            var list = SaveSystem.instance.LoadSection<List<ItemSaveData>>("TestSave", "shelfData");
+            var list = SaveSystem.instance.LoadSection<List<ItemSaveData>>("TestSave", "ItemData");
             foreach (ItemSaveData itemSaveData in list)
             {
                 if (itemSaveData.itemName == item.itemName)

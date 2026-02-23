@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e970f239d1ce12b4bbb38a4db6bf76a3, type: 3}
+  m_Name: TestPackageShelf
+  m_EditorClassIdentifier: Assembly-CSharp::BuildObject
+  Name: TestPackageShelf
+  FinalPrefab: {fileID: 7742005699661001671, guid: 5c09847e3fae56448be89d0479db837e, type: 3}
+  HoloPrefab: {fileID: 9202761994446084224, guid: 15ebf70f8c54b41459183af568773529, type: 3}
+  width: 1
+  length: 2
+  height: 2

@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using static BuildingManager;
@@ -10,11 +11,12 @@ public class PackageScript : MonoBehaviour
     public StorageManager _storageManager;
     public BuildingManager _buildingManager;
     public Transform _PackageHolder;
+    [SerializeField] private LayerMask packageLayer;
     [SerializeField] private TextMeshPro _packageText;
 
     [Header("Package Info: Assign either an Item or a Building, not both.")]
-    public Item _item;
-    public string _building = "Please insert building name here";
+    public Item packageItem;
+    public string packageBuilding = "";
 
     [Header("Package Settings, if item is building this does not matter - only set packageAmount")]
     public int packageAmount = 1;
@@ -22,29 +24,31 @@ public class PackageScript : MonoBehaviour
 
     private bool _isBuilding;
     private bool _isHoldingPackage = false;
+    public bool isInStorage = false;
 
     private Rigidbody _rb;
     private Collider _collider;
 
-
+    private void Awake()
+    {
+        maxPackageAmount = packageAmount;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        maxPackageAmount = packageAmount;
-
         _collider = GetComponent<Collider>();
         _rb = GetComponent<Rigidbody>();
 
-        if (_building != "")
+        if (packageBuilding != "")
         {
             _isBuilding = true;
         }
-        if (_item != null)
+        if (packageItem != null)
         {
             _isBuilding = false;
         }
-        if(_building != "" && _item != null)
+        if(packageBuilding != "" && packageItem != null)
         {
             Debug.LogWarning("PackageScript has both Building and Item assigned. Please assign only one.");
             gameObject.GetComponent<PackageScript>().enabled = false;
@@ -52,7 +56,7 @@ public class PackageScript : MonoBehaviour
 
         if (_isBuilding)
         {
-            _packageText.text = _building;
+            _packageText.text = packageBuilding;
         }
         else
         {
@@ -69,8 +73,46 @@ public class PackageScript : MonoBehaviour
             gameObject.transform.rotation = _PackageHolder.rotation;
             if (Input.GetKeyDown(KeyCode.F))
             {
-                _isHoldingPackage = false;
-                OnDrop();
+                GivePackage();
+                if (!isInStorage)
+                {
+                    _isHoldingPackage = false;
+                    OnDrop();
+                }
+            }
+        }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    TakePackage();
+                }
+        }
+    }
+
+    private void GivePackage()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit packageHit, 2f, packageLayer))
+        {
+            GameObject hitObject = packageHit.collider.gameObject;
+
+            if (hitObject.TryGetComponent<StorageShelfSpawn>(out var storageShelfSpawn))
+            {
+                storageShelfSpawn.InputStorageBox(this);
+            }
+        }
+    }
+
+    private void TakePackage()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 2f, packageLayer))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            if (hitObject.TryGetComponent<StorageShelfSpawn>(out var storageShelfSpawn))
+            {
+                storageShelfSpawn.GetStorageBox();
             }
         }
     }
@@ -80,14 +122,14 @@ public class PackageScript : MonoBehaviour
     {
         if (_isBuilding)
         {
-            _buildingManager._currentBuilding = _building;
+            _buildingManager._currentBuilding = packageBuilding;
             _buildingManager.currentBuildState = BuildState.Building;
             _storageManager.managerEnabled = false;
         }
         else
         {
             _storageManager.activePackageScript = this;
-            _storageManager.item = _item;
+            _storageManager.item = packageItem;
             _buildingManager.currentBuildState = BuildState.Idle;
             _storageManager.managerEnabled = true;
         }
@@ -97,8 +139,10 @@ public class PackageScript : MonoBehaviour
         _isHoldingPackage = true;
     }
 
-    private void OnDrop()
+    public void OnDrop()
     {
+        _isHoldingPackage = false;
+
         _buildingManager.StopBuilding();
         _buildingManager.currentBuildState = BuildState.Idle;
         _storageManager.managerEnabled = false;
