@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: HourGlass
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: HourGlass
-  width: 0.4
-  height: 0.4
-  depth: 0.4
+  width: 0.2
+  height: 0.23
+  depth: 0.2
   marketPrice: 2
   itemPrefab: {fileID: 8196307462067089406, guid: 0607eab141a95074296ec471d0fa33c3, type: 3}
