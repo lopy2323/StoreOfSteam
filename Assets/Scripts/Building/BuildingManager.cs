@@ -152,7 +152,7 @@ public class BuildingManager : MonoBehaviour
                     }
                     if (canBuildHere == true)
                     {
-                        _currentHoloBuilding.transform.position = GridManager.instance.tilemap.GetCellCenterWorld(res);
+                        _currentHoloBuilding.transform.position = GridManager.instance.grid.GetCellCenterWorld(res);
                         _currentHoloMeshRenderer.material.color = Color.green;
                         foreach (var item in occupiedPositions)
                         {
@@ -161,7 +161,7 @@ public class BuildingManager : MonoBehaviour
                     }
                     if (canBuildHere == false)
                     {
-                        _currentHoloBuilding.transform.position = GridManager.instance.tilemap.GetCellCenterWorld(res);
+                        _currentHoloBuilding.transform.position = GridManager.instance.grid.GetCellCenterWorld(res);
                         _currentHoloMeshRenderer.material.color = Color.red;
                     }
                 }
@@ -202,7 +202,7 @@ public class BuildingManager : MonoBehaviour
             cal = new Vector3(Worldposbuild.x + ((_tempLength - 1.00f) / 2.00f), 0, Worldposbuild.z + ((_tempWidth - 1.00f) / 2.00f));
         }
 
-        Vector3Int origin = GridManager.instance.tilemap.WorldToCell(cal);
+        Vector3Int origin = GridManager.instance.grid.WorldToCell(cal);
 
         Vector3Int currentlengthnode = origin;
 
