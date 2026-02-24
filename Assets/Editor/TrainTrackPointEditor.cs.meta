@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 9472e41241d9c6149934b650d8a768e2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - bezierPointPrefab: {fileID: 4014590987697283596, guid: d54f13974142784479b346d52041f944, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
