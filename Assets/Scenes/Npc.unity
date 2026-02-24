@@ -1412,7 +1412,7 @@ MonoBehaviour:
   _PackageHolder: {fileID: 2040436871}
   packageLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _packageText: {fileID: 616240941}
   packageItem: {fileID: 0}
   packageBuilding: 
@@ -2066,7 +2066,6 @@ MonoBehaviour:
   grid: {fileID: 1119912464}
   SizeGrid:
   - {fileID: 511692476}
-  - {fileID: 0}
   buildObject: {fileID: 3874763647880602669, guid: f99ec9a57d0709342a285a7e7d07556c, type: 3}
 --- !u!4 &713581417
 Transform:
@@ -3301,9 +3300,9 @@ MonoBehaviour:
   _PackageHolder: {fileID: 2040436871}
   packageLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _packageText: {fileID: 1926082697}
-  packageItem: {fileID: 0}
+  packageItem: {fileID: 11400000, guid: 1b29c09bb239a144eaaef386d4393dbb, type: 2}
   packageBuilding: 
   packageAmount: 10
   maxPackageAmount: 1
@@ -3629,9 +3628,9 @@ MonoBehaviour:
   _PackageHolder: {fileID: 2040436871}
   packageLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _packageText: {fileID: 400294904}
-  packageItem: {fileID: 0}
+  packageItem: {fileID: 11400000, guid: 37b4420acd17c8a4ca5b667d29cdb1a8, type: 2}
   packageBuilding: 
   packageAmount: 15
   maxPackageAmount: 1
@@ -3812,7 +3811,7 @@ MonoBehaviour:
   _PackageHolder: {fileID: 2040436871}
   packageLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _packageText: {fileID: 527033222}
   packageItem: {fileID: 0}
   packageBuilding: TestShelf2
