@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,7 +8,8 @@ using UnityEngine.Tilemaps;
 public class GridManager : MonoBehaviour
 {
     static public GridManager instance;
-    public Tilemap tilemap;
+    public Grid grid;
+    public List<BoxCollider> SizeGrid = new List<BoxCollider>();
     public Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
     public GameObject buildObject;
 
@@ -18,7 +20,7 @@ public class GridManager : MonoBehaviour
         instance = this;
         if (!savegame)
         {
-            ScanTilemap();
+            CalculateGrid();
         }
 
 
@@ -35,23 +37,37 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    void ScanTilemap()
+
+    
+    public void CalculateGrid()
     {
-        BoundsInt bounds = tilemap.cellBounds;
-
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        foreach (var col in SizeGrid)
         {
-            if (!tilemap.HasTile(pos)) continue;
+            var bounds = col.bounds;
 
-            TileData data = new TileData(
-                true,
-                tilemap.GetCellCenterWorld(pos),
-                pos.x,
-                pos.y,
-                pos,
-                false
-            );
-            tileDataMap[pos] = data;
+
+            int width = Mathf.FloorToInt(bounds.size.x);
+            int height = Mathf.FloorToInt(bounds.size.z);
+            float error = 0.02f;
+            Vector3 topLeft = new Vector3(bounds.min.x + error, bounds.center.y, bounds.max.z - error);
+            Vector3Int gridPos = grid.WorldToCell(topLeft);
+
+            Debug.Log(height);
+            for (int z = 0; z < height; z++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Vector3Int pos = (new Vector3Int(gridPos.x + x, gridPos.y - z, gridPos.z));
+                    tileDataMap[pos] = new TileData(
+                        true,
+                        grid.GetCellCenterWorld(pos),
+                        pos.x,
+                        pos.y,
+                        pos,
+                        false
+                    );
+                }
+            }
         }
     }
 
